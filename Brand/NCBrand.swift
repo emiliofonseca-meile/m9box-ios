@@ -61,19 +61,19 @@ struct NextcloudVersion: Comparable {
 final class NCBrandOptions: @unchecked Sendable {
     static let shared = NCBrandOptions()
 
-    var brand: String = "Nextcloud"
-    var brandUserAgent: String = ""
-    var textCopyrightNextcloudiOS: String = "Nextcloud Matheria for iOS %@ © 2026"
+    var brand: String = "M9 Box"
+    var brandUserAgent: String = "M9Box"
+    var textCopyrightNextcloudiOS: String = "M9 Box for iOS %@ © 2026 Meile"
     var textCopyrightNextcloudServer: String = "Nextcloud Server %@"
     var loginBaseUrl: String = ""
     var pushNotificationServerProxy: String = ""
-    var linkLoginHost: String = "https://nextcloud.com/install"
-    var linkloginPreferredProviders: String = "https://nextcloud.com/signup-ios"
-    var webLoginAutenticationProtocol: String = "nc://"                                        // example "abc://"
-    var privacy: String = "https://nextcloud.com/privacy"
-    var sourceCode: String = "https://github.com/nextcloud/ios"
+    var linkLoginHost: String = ""
+    var linkloginPreferredProviders: String = ""
+    var webLoginAutenticationProtocol: String = "m9box://"                                     // example "abc://"
+    var privacy: String = ""
+    var sourceCode: String = "https://github.com/emiliofonseca-meile/m9box-ios"
     var mobileconfig: String = "/remote.php/dav/provisioning/apple-provisioning.mobileconfig"
-    var appStoreUrl: String = "https://apps.apple.com/in/app/nextcloud/id1125420102"
+    var appStoreUrl: String = ""
 
     var doNotAskPasscodeAtStartup: Bool = false
 
@@ -81,8 +81,8 @@ final class NCBrandOptions: @unchecked Sendable {
     var folderDefaultAutoUpload: String = "Photos"
 
     // Capabilities Group
-    var capabilitiesGroup: String = "group.it.twsweb.Crypto-Cloud"
-    var capabilitiesGroupApps: String = "group.com.nextcloud.apps"
+    var capabilitiesGroup: String = "group.network.m9.box"
+    var capabilitiesGroupApps: String = "group.network.m9.box.apps"
 
     // BRAND ONLY
     var use_AppConfig: Bool = false
@@ -99,7 +99,7 @@ final class NCBrandOptions: @unchecked Sendable {
     var disable_crash_service: Bool = false
     var disable_log: Bool = false
     var disable_mobileconfig: Bool = false  
-    var disable_show_more_nextcloud_apps_in_settings: Bool = false
+    var disable_show_more_nextcloud_apps_in_settings: Bool = true
     var disable_source_code_in_settings: Bool = false
     var enforce_passcode_lock = false
     var enforce_privacyScreenEnabled = false
@@ -178,7 +178,7 @@ final class NCBrandColor: @unchecked Sendable {
     static let shared = NCBrandColor()
 
     // This is rewrited from customet theme, default is Nextcloud color
-    let customer: UIColor = UIColor(red: 0.0 / 255.0, green: 130.0 / 255.0, blue: 201.0 / 255.0, alpha: 1.0) // Nextcloud default: #0082C9
+    let customer: UIColor = UIColor(red: 17.0 / 255.0, green: 109.0 / 255.0, blue: 240.0 / 255.0, alpha: 1.0) // M9 Box: #116DF0
     var customerText: UIColor = .white
 
     // INTERNAL DEFINE COLORS
