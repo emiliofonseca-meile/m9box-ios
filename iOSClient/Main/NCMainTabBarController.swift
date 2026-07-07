@@ -47,6 +47,7 @@ class NCMainTabBarController: UITabBarController {
 
         tabBar.tintColor = NCBrandColor.shared.getElement(account: account)
 
+        configureMeileCalendarController()
         configureMoreController()
         configureTabBarItems()
         configureTabBarAppearance()
@@ -106,6 +107,15 @@ class NCMainTabBarController: UITabBarController {
         guard var controllers = viewControllers else { return }
 
         controllers.append(makeMoreNavigationController())
+        viewControllers = controllers
+    }
+
+    // M9 Box: native CalDAV calendar tab, inserted before "More".
+    private func configureMeileCalendarController() {
+        guard var controllers = viewControllers,
+              let calendar = MeileCalendarTab.makeViewController(account: account) else { return }
+
+        controllers.append(calendar)
         viewControllers = controllers
     }
 
