@@ -139,6 +139,9 @@ final class NCMoreModel: ObservableObject {
         /// Opens the SwiftUI settings screen.
         case settings
 
+        /// M9 Box: opens the CalDAV/CardDAV device-sync (.mobileconfig) setup.
+        case meileSync
+
         /// No-op destination.
         case none
     }
@@ -287,6 +290,15 @@ final class NCMoreModel: ObservableObject {
             )
         )
 
+        // M9 Box: device sync (Agenda + Contatos into the phone's native apps).
+        functionItems.append(
+            Item(
+                titleKey: "_meile_sync_",
+                image: "arrow.triangle.2.circlepath",
+                destination: .meileSync
+            )
+        )
+
         settingsItems.append(
             Item(
                 titleKey: "_settings_",
@@ -349,6 +361,9 @@ final class NCMoreModel: ObservableObject {
 
         case .settings:
             openSettings()
+
+        case .meileSync:
+            openMeileSync()
 
         case .none:
             break
@@ -515,6 +530,22 @@ final class NCMoreModel: ObservableObject {
         settingsController.title = NSLocalizedString("_settings_", comment: "")
 
         navigationController.pushViewController(settingsController, animated: true)
+    }
+
+    /// M9 Box: opens the CalDAV/CardDAV device-sync setup, which generates a
+    /// .mobileconfig for the signed-in account so Agenda/Contatos land in the
+    /// iPhone's native Calendar/Contacts apps.
+    private func openMeileSync() {
+        guard let controller,
+              let navigationController = controller.currentNavigationController() else {
+            return
+        }
+
+        let syncView = MeileSyncSetupView(account: controller.account)
+        let syncController = UIHostingController(rootView: syncView)
+        syncController.title = NSLocalizedString("_meile_sync_", comment: "")
+
+        navigationController.pushViewController(syncController, animated: true)
     }
 
     /// Opens the SwiftUI auto-upload screen, injecting the shared counter so the row and the

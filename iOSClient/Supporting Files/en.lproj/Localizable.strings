@@ -824,3 +824,4 @@ You can stop it at any time, adjust the settings, and enable it again.";
 "_e2ee_setup_verify_publickey_" = "Public key does not match the certificate";
 "_e2ee_setup_generate_passphrase_" = "Unable to generate a passphrase";
 "_meile_calendar_" = "Calendar";
+"_meile_sync_" = "Sync Calendar & Contacts";

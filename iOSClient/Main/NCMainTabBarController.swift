@@ -47,7 +47,11 @@ class NCMainTabBarController: UITabBarController {
 
         tabBar.tintColor = NCBrandColor.shared.getElement(account: account)
 
-        configureMeileCalendarController()
+        // M9 Box: in-app calendar DISABLED (2026-07-07). Superseded by native device
+        // sync — the app installs a CalDAV/CardDAV .mobileconfig so Agenda/Contatos
+        // land in the iPhone's own Calendar/Contacts apps (see MeileSync). The
+        // calendar UI sources stay in the tree (still compile) but are not shown.
+        // configureMeileCalendarController()
         configureMoreController()
         configureTabBarItems()
         configureTabBarAppearance()
