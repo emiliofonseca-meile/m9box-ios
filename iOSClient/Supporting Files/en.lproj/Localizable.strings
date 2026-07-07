@@ -885,3 +885,4 @@
 "_passcode_incorrect_" = "Incorrect passcode. Try again.";
 "_passcode_digits_entered_" = "Passcode digits entered";
 "_meile_calendar_" = "Calendar";
+"_meile_sync_" = "Sync Calendar & Contacts";
