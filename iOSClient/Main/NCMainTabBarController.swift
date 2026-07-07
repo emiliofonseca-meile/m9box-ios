@@ -158,6 +158,15 @@ class NCMainTabBarController: UITabBarController {
         }
     }
 
+    // M9 Box: native CalDAV calendar tab, inserted before "More".
+    private func configureMeileCalendarController() {
+        guard var controllers = viewControllers,
+              let calendar = MeileCalendarTab.makeViewController(account: account) else { return }
+
+        controllers.append(calendar)
+        viewControllers = controllers
+    }
+
     private func configureTabBarItems() {
         configureTabBarItem(
             at: 0,
