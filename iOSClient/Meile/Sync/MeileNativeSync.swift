@@ -26,6 +26,8 @@ struct MeileSyncSummary {
     var events = 0
     var contacts = 0
     var addressBooks = 0
+    var pushedEvents = 0
+    var pushedContacts = 0
     var error: String?
 }
 
@@ -110,16 +112,119 @@ final class MeileNativeSync {
             return summary
         }
         NSLog("MeileSync: start cal=\(calendarAuthorized()) con=\(contactsAuthorized())")
-        if calendarAuthorized() { await syncCalendar(creds, summary: &summary) }
-        else { summary.error = appendError(summary.error, "Sem acesso à Agenda.") }
-        if contactsAuthorized() { await syncContacts(account: account, creds: creds, summary: &summary) }
-        else { summary.error = appendError(summary.error, "Sem acesso aos Contatos.") }
+        // Push local creations FIRST so the pull that follows sees the server
+        // already carrying them (and never deletes a just-created local item).
+        if calendarAuthorized() {
+            await pushCalendar(creds, summary: &summary)
+            await syncCalendar(creds, summary: &summary)
+        } else { summary.error = appendError(summary.error, "Sem acesso à Agenda.") }
+        if contactsAuthorized() {
+            await pushContacts(account: account, creds: creds, summary: &summary)
+            await syncContacts(account: account, creds: creds, summary: &summary)
+        } else { summary.error = appendError(summary.error, "Sem acesso aos Contatos.") }
         NSLog("MeileSync: done events=\(summary.events) contacts=\(summary.contacts)")
         return summary
     }
 
     private func appendError(_ existing: String?, _ msg: String) -> String {
         [existing, msg].compactMap { $0 }.joined(separator: " ")
+    }
+
+    // MARK: - Push (device -> server), CREATE only for v1
+
+    /// Push events the user created in the M9 Box calendar (no server marker yet)
+    /// up to the first writable Box calendar. Edits/deletes are a follow-up: iOS
+    /// exposes no per-item dirty flag, so those need change snapshotting.
+    private func pushCalendar(_ creds: MeileSyncCredentials, summary: inout MeileSyncSummary) async {
+        let store = EKEventStore()
+        guard let calendar = ensureCalendar(store) else { return }
+        let client = MeileCalDavClient(baseURL: creds.baseURL, authHeader: creds.authHeader, userId: creds.userId)
+        guard let collections = try? await MeileCalendarRepository(client: client).loadCalendars(),
+              let target = collections.first(where: { !$0.readOnly }) ?? collections.first else { return }
+
+        let start = Date().addingTimeInterval(-pastWindow)
+        let end = Date().addingTimeInterval(futureWindow)
+        let predicate = store.predicateForEvents(withStart: start, end: end, calendars: [calendar])
+        var pushed = 0
+        for ev in store.events(matching: predicate) where !(ev.url?.absoluteString.hasPrefix("m9box://") ?? false) {
+            let uid = UUID().uuidString + "@m9box"
+            let href = target.href.trimmedSlash + "/" + UUID().uuidString + ".ics"
+            do {
+                try await client.putResource(href: href, ics: buildEventICS(ev, uid: uid), ifMatch: nil, isNew: true)
+                // Mark it so the pull recognises it as ours and never duplicates it.
+                let marker = "m9box://" + Data("\(href)#\(ev.startDate.timeIntervalSince1970)".utf8).base64EncodedString()
+                ev.url = URL(string: marker)
+                try? store.save(ev, span: .thisEvent, commit: true)
+                pushed += 1
+            } catch {
+                NSLog("MeileSync: push event failed: \(error)")
+            }
+        }
+        summary.pushedEvents = pushed
+    }
+
+    /// Push contacts the user created in the M9 Box group (not yet mapped to a
+    /// server href) up to the first Box address book.
+    private func pushContacts(account: String, creds: MeileSyncCredentials, summary: inout MeileSyncSummary) async {
+        let store = CNContactStore()
+        guard let group = ensureGroup(store) else { return }
+        let client = MeileCardDavClient(baseURL: creds.baseURL, authHeader: creds.authHeader, userId: creds.userId)
+        guard let books = try? await client.discoverAddressBooks(), let book = books.first else { return }
+
+        var map = loadContactMap(account: account)
+        let known = Set(map.values)
+        let keys = [CNContactVCardSerialization.descriptorForRequiredKeys()]
+        let predicate = CNContact.predicateForContactsInGroup(withIdentifier: group.identifier)
+        guard let contacts = try? store.unifiedContacts(matching: predicate, keysToFetch: keys) else { return }
+
+        var pushed = 0
+        for c in contacts where !known.contains(c.identifier) {
+            guard let data = try? CNContactVCardSerialization.data(with: [c]),
+                  let vcard = String(data: data, encoding: .utf8) else { continue }
+            let href = book.href.trimmedSlash + "/" + UUID().uuidString + ".vcf"
+            do {
+                try await client.putVCard(href: href, vcard: vcard, ifMatch: nil, isNew: true)
+                map[href] = c.identifier
+                pushed += 1
+            } catch {
+                NSLog("MeileSync: push contact failed: \(error)")
+            }
+        }
+        saveContactMap(map, account: account)
+        summary.pushedContacts = pushed
+    }
+
+    private func buildEventICS(_ ev: EKEvent, uid: String) -> String {
+        var lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Meile//M9 Box//EN", "BEGIN:VEVENT",
+                     "UID:\(uid)", "DTSTAMP:\(utcStamp(Date()))"]
+        if ev.isAllDay {
+            lines.append("DTSTART;VALUE=DATE:\(dateStamp(ev.startDate))")
+            lines.append("DTEND;VALUE=DATE:\(dateStamp(ev.endDate))")
+        } else {
+            lines.append("DTSTART:\(utcStamp(ev.startDate))")
+            lines.append("DTEND:\(utcStamp(ev.endDate))")
+        }
+        lines.append("SUMMARY:\(icsEscape(ev.title ?? ""))")
+        if let loc = ev.location, !loc.isEmpty { lines.append("LOCATION:\(icsEscape(loc))") }
+        if let notes = ev.notes, !notes.isEmpty { lines.append("DESCRIPTION:\(icsEscape(notes))") }
+        lines.append(contentsOf: ["END:VEVENT", "END:VCALENDAR"])
+        return lines.joined(separator: "\r\n")
+    }
+
+    private func utcStamp(_ date: Date) -> String { stamp(date, "yyyyMMdd'T'HHmmss'Z'", utc: true) }
+    private func dateStamp(_ date: Date) -> String { stamp(date, "yyyyMMdd", utc: false) }
+    private func stamp(_ date: Date, _ format: String, utc: Bool) -> String {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.dateFormat = format
+        if utc { f.timeZone = TimeZone(identifier: "UTC") }
+        return f.string(from: date)
+    }
+    private func icsEscape(_ s: String) -> String {
+        s.replacingOccurrences(of: "\\", with: "\\\\")
+            .replacingOccurrences(of: ";", with: "\\;")
+            .replacingOccurrences(of: ",", with: "\\,")
+            .replacingOccurrences(of: "\n", with: "\\n")
     }
 
     // MARK: - Calendar (EventKit)
@@ -304,4 +409,8 @@ struct MeileSyncCredentials {
         self.authHeader = "Basic \(token)"
         self.userId = session.userId.isEmpty ? session.user : session.userId
     }
+}
+
+private extension String {
+    var trimmedSlash: String { hasSuffix("/") ? String(dropLast()) : self }
 }

@@ -142,7 +142,11 @@ struct MeileSyncSetupView: View {
         errorText = nil
         let summary = await MeileNativeSync.shared.sync(account: account)
         busy = false
-        resultText = "Agenda: \(summary.events) eventos · Contatos: \(summary.contacts) (catálogos: \(summary.addressBooks))"
+        var line = "Agenda: \(summary.events) · Contatos: \(summary.contacts)"
+        if summary.pushedEvents + summary.pushedContacts > 0 {
+            line += " · enviados: \(summary.pushedEvents + summary.pushedContacts)"
+        }
+        resultText = line
         if let e = summary.error { errorText = e }
     }
 
