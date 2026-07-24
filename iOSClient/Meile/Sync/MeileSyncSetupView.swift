@@ -27,6 +27,7 @@ struct MeileSyncSetupView: View {
     @State private var busy = false
     @State private var shareProfile: ProfileFile?
     @State private var errorText: String?
+    @State private var resultText: String?
 
     private let brandBlue = Color(red: 0.07, green: 0.43, blue: 0.94)
 
@@ -60,6 +61,9 @@ struct MeileSyncSetupView: View {
                 }
                 if let errorText {
                     Text(errorText).foregroundColor(.red).font(.footnote)
+                }
+                if let resultText {
+                    Text(resultText).foregroundColor(.secondary).font(.footnote)
                 }
             }
 
@@ -125,6 +129,7 @@ struct MeileSyncSetupView: View {
         busy = false
         if ok {
             enabled = true
+            await syncNow()
         } else {
             errorText = "Conceda acesso à Agenda e aos Contatos nos Ajustes para sincronizar."
         }
@@ -133,8 +138,12 @@ struct MeileSyncSetupView: View {
     @MainActor
     private func syncNow() async {
         busy = true
-        await MeileNativeSync.shared.sync(account: account)
+        resultText = nil
+        errorText = nil
+        let summary = await MeileNativeSync.shared.sync(account: account)
         busy = false
+        resultText = "Agenda: \(summary.events) eventos · Contatos: \(summary.contacts) (catálogos: \(summary.addressBooks))"
+        if let e = summary.error { errorText = e }
     }
 
     private func generateProfile() {

@@ -42,7 +42,10 @@ final class MeileCardDavClient {
         while s.hasSuffix("/") { s.removeLast() }
         return s + "/remote.php/dav"
     }
-    private var addressBookHome: String { "\(davBase)/addressbooks/\(userId)/" }
+    // Nextcloud address books live under addressbooks/users/<user>/ — note the
+    // extra "users/" segment that the calendar path (calendars/<user>/) does NOT
+    // have. Getting this wrong yields an empty PROPFIND and no contacts.
+    private var addressBookHome: String { "\(davBase)/addressbooks/users/\(userId)/" }
 
     private func url(_ href: String) -> URL {
         if href.hasPrefix("http"), let u = URL(string: href) { return u }

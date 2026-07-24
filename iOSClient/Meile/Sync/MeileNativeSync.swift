@@ -20,6 +20,15 @@ import EventKit
 import Foundation
 import UIKit
 
+/// Outcome of a sync pass, surfaced in the UI so problems are visible without a
+/// device log.
+struct MeileSyncSummary {
+    var events = 0
+    var contacts = 0
+    var addressBooks = 0
+    var error: String?
+}
+
 final class MeileNativeSync {
 
     static let shared = MeileNativeSync()
@@ -56,7 +65,7 @@ final class MeileNativeSync {
     /// from any screen's appear; it no-ops when disabled or already running.
     func syncIfEnabled(account: String) {
         guard isEnabled, !account.isEmpty else { return }
-        Task { await sync(account: account) }
+        Task { _ = await sync(account: account) }
     }
 
     // MARK: permissions
@@ -90,28 +99,50 @@ final class MeileNativeSync {
 
     // MARK: sync
 
-    func sync(account: String) async {
-        guard !isRunning else { return }
+    @discardableResult
+    func sync(account: String) async -> MeileSyncSummary {
+        var summary = MeileSyncSummary()
+        guard !isRunning else { return summary }
         isRunning = true
         defer { isRunning = false }
-        guard let creds = MeileSyncCredentials(account: account) else { return }
-        if calendarAuthorized() { await syncCalendar(creds) }
-        if contactsAuthorized() { await syncContacts(account: account, creds: creds) }
+        guard let creds = MeileSyncCredentials(account: account) else {
+            summary.error = "Sem credenciais da conta."
+            return summary
+        }
+        NSLog("MeileSync: start cal=\(calendarAuthorized()) con=\(contactsAuthorized())")
+        if calendarAuthorized() { await syncCalendar(creds, summary: &summary) }
+        else { summary.error = appendError(summary.error, "Sem acesso à Agenda.") }
+        if contactsAuthorized() { await syncContacts(account: account, creds: creds, summary: &summary) }
+        else { summary.error = appendError(summary.error, "Sem acesso aos Contatos.") }
+        NSLog("MeileSync: done events=\(summary.events) contacts=\(summary.contacts)")
+        return summary
+    }
+
+    private func appendError(_ existing: String?, _ msg: String) -> String {
+        [existing, msg].compactMap { $0 }.joined(separator: " ")
     }
 
     // MARK: - Calendar (EventKit)
 
-    private func syncCalendar(_ creds: MeileSyncCredentials) async {
+    private func syncCalendar(_ creds: MeileSyncCredentials, summary: inout MeileSyncSummary) async {
         let store = EKEventStore()
-        guard let calendar = ensureCalendar(store) else { return }
+        guard let calendar = ensureCalendar(store) else {
+            summary.error = appendError(summary.error, "Não foi possível criar o calendário.")
+            return
+        }
 
         let client = MeileCalDavClient(baseURL: creds.baseURL, authHeader: creds.authHeader, userId: creds.userId)
         let repository = MeileCalendarRepository(client: client)
         let start = Date().addingTimeInterval(-pastWindow)
         let end = Date().addingTimeInterval(futureWindow)
 
-        guard let collections = try? await repository.loadCalendars() else { return }
+        guard let collections = try? await repository.loadCalendars() else {
+            summary.error = appendError(summary.error, "Falha ao buscar agendas.")
+            return
+        }
         let events = await repository.loadEvents(calendars: collections, start: start, end: end)
+        summary.events = events.count
+        NSLog("MeileSync: calendars=\(collections.count) events=\(events.count)")
 
         // Existing M9 Box events in the window, keyed by the marker we store in .url.
         let predicate = store.predicateForEvents(withStart: start, end: end, calendars: [calendar])
@@ -162,22 +193,39 @@ final class MeileNativeSync {
 
     // MARK: - Contacts (Contacts framework)
 
-    private func syncContacts(account: String, creds: MeileSyncCredentials) async {
+    private func syncContacts(account: String, creds: MeileSyncCredentials, summary: inout MeileSyncSummary) async {
         let store = CNContactStore()
-        guard let group = ensureGroup(store) else { return }
+        guard let group = ensureGroup(store) else {
+            summary.error = appendError(summary.error, "Não foi possível criar o grupo de contatos.")
+            return
+        }
 
         let client = MeileCardDavClient(baseURL: creds.baseURL, authHeader: creds.authHeader, userId: creds.userId)
-        guard let books = try? await client.discoverAddressBooks() else { return }
-
+        let books: [MeileAddressBook]
+        do {
+            books = try await client.discoverAddressBooks()
+        } catch {
+            summary.error = appendError(summary.error, "Falha ao buscar catálogos (\((error as? MeileCardDavError)?.code ?? -1)).")
+            NSLog("MeileSync: carddav discover failed: \(error)")
+            return
+        }
+        summary.addressBooks = books.count
         var remote = [MeileRemoteVCard]()
         for book in books {
-            if let cards = try? await client.listContacts(addressBookHref: book.href) { remote.append(contentsOf: cards) }
+            do {
+                let cards = try await client.listContacts(addressBookHref: book.href)
+                remote.append(contentsOf: cards)
+            } catch {
+                NSLog("MeileSync: carddav list \(book.href) failed: \(error)")
+            }
         }
+        NSLog("MeileSync: addressBooks=\(books.count) vcards=\(remote.count)")
 
         var map = loadContactMap(account: account)   // href -> saved contact identifier
         let serverHrefs = Set(remote.map { $0.href })
 
         // Wholesale replace per href (simplest correct upsert, like the Android store).
+        var saved = 0
         for card in remote {
             guard let contact = MeileVCard.parse(card.vcard) else { continue }
             let save = CNSaveRequest()
@@ -186,10 +234,16 @@ final class MeileNativeSync {
             }
             save.add(contact, toContainerWithIdentifier: nil)
             save.addMember(contact, to: group)
-            if (try? store.execute(save)) != nil {
+            do {
+                try store.execute(save)
                 map[card.href] = contact.identifier
+                saved += 1
+            } catch {
+                NSLog("MeileSync: contact save failed \(card.href): \(error)")
             }
         }
+        summary.contacts = saved
+        NSLog("MeileSync: contacts saved=\(saved)")
         // Remove contacts whose href is gone from the server.
         for (href, id) in map where !serverHrefs.contains(href) {
             if let existing = try? fetchContact(store, identifier: id) {
