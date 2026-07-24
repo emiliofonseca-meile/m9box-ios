@@ -125,8 +125,13 @@ class NCFiles: NCCollectionViewCommon {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        // M9 Box: first-session offer to set up calendar/contacts sync.
+        // M9 Box: first-session offer to set up calendar/contacts sync, and a
+        // throttle-free foreground refresh so an active user sees server changes
+        // without waiting for a background pass.
         MeileSyncOnboarding.maybeOffer(from: self, account: self.controller?.account)
+        if let account = self.controller?.account {
+            MeileNativeSync.shared.syncIfEnabled(account: account)
+        }
 
         Task {
             // (+)

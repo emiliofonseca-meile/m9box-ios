@@ -64,6 +64,12 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Camera access is required to scan documents and take photos in this app.</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>Para sincronizar sua agenda do M9 Box com o Calendário do iPhone.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Para sincronizar sua agenda do M9 Box com o Calendário do iPhone.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Para sincronizar seus contatos do M9 Box com os Contatos do iPhone.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Face ID is required to authenticate using face recognition.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
