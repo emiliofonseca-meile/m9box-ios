@@ -83,6 +83,23 @@ final class MeileCardDavClient {
         return MeileCardDavParser.parseAddressBooks(data, home: addressBookHome)
     }
 
+    /// PUT a vCard (create when `isNew`). Returns the server ETag if provided.
+    @discardableResult
+    func putVCard(href: String, vcard: String, ifMatch: String?, isNew: Bool) async throws -> String? {
+        var req = URLRequest(url: url(href))
+        req.httpMethod = "PUT"
+        req.setValue(authHeader, forHTTPHeaderField: "Authorization")
+        req.setValue("text/vcard; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        req.httpBody = vcard.data(using: .utf8)
+        if isNew { req.setValue("*", forHTTPHeaderField: "If-None-Match") }
+        else if let ifMatch { req.setValue("\"\(ifMatch)\"", forHTTPHeaderField: "If-Match") }
+        let (_, response) = try await session.data(for: req)
+        guard let http = response as? HTTPURLResponse, [200, 201, 204].contains(http.statusCode) else {
+            throw MeileCardDavError(code: (response as? HTTPURLResponse)?.statusCode ?? -1, op: "putVCard")
+        }
+        return http.value(forHTTPHeaderField: "ETag")?.trimmingCharacters(in: CharacterSet(charactersIn: "\" "))
+    }
+
     func listContacts(addressBookHref: String) async throws -> [MeileRemoteVCard] {
         let body = """
         <?xml version="1.0" encoding="utf-8"?>
