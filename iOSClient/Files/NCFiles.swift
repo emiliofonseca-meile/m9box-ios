@@ -125,6 +125,9 @@ class NCFiles: NCCollectionViewCommon {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
+        // M9 Box: first-session offer to set up calendar/contacts sync.
+        MeileSyncOnboarding.maybeOffer(from: self, account: self.controller?.account)
+
         Task {
             // (+)
             await self.mainNavigationController?.menuPlus?.create(session: session)
