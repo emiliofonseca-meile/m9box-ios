@@ -57,7 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
         UserDefaults.standard.register(defaults: ["UserAgent": userAgent])
 
-        if !NCPreferences().disableCrashservice, !NCBrandOptions.shared.disable_crash_service {
+        if !NCPreferences().disableCrashservice, !NCBrandOptions.shared.disable_crash_service, hasValidFirebaseConfig() {
             FirebaseApp.configure()
         }
 
@@ -125,6 +125,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
 
         return true
+    }
+
+    /// FirebaseApp.configure() throws a fatal exception when GoogleService-Info.plist
+    /// carries an invalid API key — which is exactly the placeholder the M9 Box brand
+    /// ships until a real Firebase project exists (push/crashlytics = a later phase).
+    /// On the simulator that slid by; on a device it hard-crashes at launch. Only
+    /// configure when the bundled plist looks real, so the app runs fine without
+    /// Firebase and self-heals the moment a genuine plist is dropped in.
+    private func hasValidFirebaseConfig() -> Bool {
+        guard let path = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist"),
+              let plist = NSDictionary(contentsOfFile: path),
+              let apiKey = plist["API_KEY"] as? String
+        else { return false }
+        // Firebase requires a 39-char API key; the placeholder fails that and also
+        // carries the literal marker.
+        return apiKey.count == 39 && !apiKey.contains("PLACEHOLDER")
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
