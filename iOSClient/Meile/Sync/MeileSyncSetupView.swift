@@ -2,9 +2,11 @@
 //  M9 Box - Meile branded Nextcloud client
 //  SPDX-License-Identifier: GPL-3.0-or-later
 //
-//  "Sincronizar Agenda e Contatos" screen. Builds a CalDAV/CardDAV .mobileconfig
-//  from the signed-in account and hands it to iOS to install, so events/contacts
-//  appear in the phone's native Calendar/Contacts apps. One app, no DAVx5.
+//  Sync screen. Primary path is native sync (EventKit/Contacts): one tap grants
+//  permission and the app mirrors the Box agenda/contacts into the phone's own
+//  Calendar/Contacts — no profile, no Settings. The .mobileconfig path is kept
+//  under "Opções avançadas" for anyone who prefers a real system CalDAV account
+//  (which iOS then syncs in the background) at the cost of the manual install.
 //
 
 import SwiftUI
@@ -21,30 +23,40 @@ private struct ProfileFile: Identifiable {
 struct MeileSyncSetupView: View {
     let account: String
 
+    @State private var enabled = MeileNativeSync.shared.isEnabled
+    @State private var busy = false
     @State private var shareProfile: ProfileFile?
     @State private var errorText: String?
+
+    private let brandBlue = Color(red: 0.07, green: 0.43, blue: 0.94)
 
     var body: some View {
         List {
             Section {
                 Text("Sincronizar Agenda e Contatos")
                     .font(.title3).bold()
-                    .foregroundColor(Color(red: 0.07, green: 0.43, blue: 0.94))
-                Text("Instale o perfil do M9 Box para que sua agenda e seus contatos apareçam no Calendário e nos Contatos nativos do iPhone.")
+                    .foregroundColor(brandBlue)
+                Text("Sua agenda e seus contatos do M9 Box aparecem no Calendário e nos Contatos do iPhone.")
                     .font(.subheadline)
             }
 
-            Section("Como funciona") {
-                stepRow(1, "Toque em \"Gerar perfil de sincronização\".")
-                stepRow(2, "Escolha \"Salvar em Arquivos\" (ou abra direto) e toque no arquivo.")
-                stepRow(3, "Em Ajustes › Perfil Baixado, toque em Instalar e informe sua senha do M9 Box.")
-            }
-
             Section {
-                Button {
-                    generate()
-                } label: {
-                    Label("Gerar perfil de sincronização", systemImage: "arrow.triangle.2.circlepath")
+                if enabled {
+                    Label("Sincronização ativada", systemImage: "checkmark.circle.fill")
+                        .foregroundColor(.green)
+                    Button {
+                        Task { await syncNow() }
+                    } label: {
+                        if busy { ProgressView() } else { Label("Sincronizar agora", systemImage: "arrow.triangle.2.circlepath") }
+                    }
+                    .disabled(busy)
+                } else {
+                    Button {
+                        Task { await activate() }
+                    } label: {
+                        if busy { ProgressView() } else { Label("Ativar sincronização", systemImage: "arrow.triangle.2.circlepath") }
+                    }
+                    .disabled(busy)
                 }
                 if let errorText {
                     Text(errorText).foregroundColor(.red).font(.footnote)
@@ -55,19 +67,24 @@ struct MeileSyncSetupView: View {
                 openRow("Agenda", systemImage: "calendar", scheme: "calshow://")
                 openRow("Contatos", systemImage: "person.crop.circle", scheme: "contacts://")
             }
+
+            Section {
+                Button {
+                    generateProfile()
+                } label: {
+                    Label("Gerar perfil (conta CalDAV do sistema)", systemImage: "gearshape")
+                        .font(.subheadline)
+                }
+            } header: {
+                Text("Opções avançadas")
+            } footer: {
+                Text("Instala uma conta de sistema que o iPhone sincroniza em segundo plano. Requer instalar um perfil em Ajustes e informar sua senha.")
+            }
         }
         .navigationTitle("Sincronização")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(item: $shareProfile) { profile in
             MeileShareSheet(items: [profile.url])
-        }
-    }
-
-    private func stepRow(_ n: Int, _ text: String) -> some View {
-        HStack(alignment: .top, spacing: 10) {
-            Text("\(n)").bold().frame(width: 22, height: 22)
-                .background(Circle().fill(Color(red: 0.07, green: 0.43, blue: 0.94).opacity(0.15)))
-            Text(text).font(.subheadline)
         }
     }
 
@@ -82,16 +99,34 @@ struct MeileSyncSetupView: View {
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         } label: {
             HStack {
-                Label(title, systemImage: systemImage)
-                    .foregroundColor(Color(red: 0.07, green: 0.43, blue: 0.94))
+                Label(title, systemImage: systemImage).foregroundColor(brandBlue)
                 Spacer()
-                Image(systemName: "arrow.right")
-                    .foregroundColor(Color(red: 0.07, green: 0.43, blue: 0.94))
+                Image(systemName: "arrow.right").foregroundColor(brandBlue)
             }
         }
     }
 
-    private func generate() {
+    @MainActor
+    private func activate() async {
+        errorText = nil
+        busy = true
+        let ok = await MeileNativeSync.shared.enable(account: account)
+        busy = false
+        if ok {
+            enabled = true
+        } else {
+            errorText = "Conceda acesso à Agenda e aos Contatos nos Ajustes para sincronizar."
+        }
+    }
+
+    @MainActor
+    private func syncNow() async {
+        busy = true
+        await MeileNativeSync.shared.sync(account: account)
+        busy = false
+    }
+
+    private func generateProfile() {
         errorText = nil
         guard let url = MeileMobileConfig.makeProfile(account: account) else {
             errorText = "Entre na sua conta M9 Box primeiro."
