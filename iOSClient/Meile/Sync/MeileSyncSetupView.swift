@@ -10,11 +10,18 @@
 import SwiftUI
 import UIKit
 
+/// Wraps the profile URL so it can drive `.sheet(item:)`. Using `.sheet(item:)`
+/// instead of `.sheet(isPresented:)` + `if let` avoids the race where SwiftUI
+/// presents the sheet before the URL state commits and shows an empty sheet.
+private struct ProfileFile: Identifiable {
+    let id = UUID()
+    let url: URL
+}
+
 struct MeileSyncSetupView: View {
     let account: String
 
-    @State private var profileURL: URL?
-    @State private var showShare = false
+    @State private var shareProfile: ProfileFile?
     @State private var errorText: String?
 
     var body: some View {
@@ -51,10 +58,8 @@ struct MeileSyncSetupView: View {
         }
         .navigationTitle("Sincronização")
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $showShare) {
-            if let profileURL {
-                MeileShareSheet(items: [profileURL])
-            }
+        .sheet(item: $shareProfile) { profile in
+            MeileShareSheet(items: [profile.url])
         }
     }
 
@@ -92,8 +97,7 @@ struct MeileSyncSetupView: View {
             errorText = "Entre na sua conta M9 Box primeiro."
             return
         }
-        profileURL = url
-        showShare = true
+        shareProfile = ProfileFile(url: url)
     }
 }
 
