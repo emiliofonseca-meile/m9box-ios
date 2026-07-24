@@ -43,6 +43,11 @@ struct MeileSyncSetupView: View {
                     Text(errorText).foregroundColor(.red).font(.footnote)
                 }
             }
+
+            Section("Abrir no iPhone") {
+                openRow("Agenda", systemImage: "calendar", scheme: "calshow://")
+                openRow("Contatos", systemImage: "person.crop.circle", scheme: "contacts://")
+            }
         }
         .navigationTitle("Sincronização")
         .navigationBarTitleDisplayMode(.inline)
@@ -58,6 +63,26 @@ struct MeileSyncSetupView: View {
             Text("\(n)").bold().frame(width: 22, height: 22)
                 .background(Circle().fill(Color(red: 0.07, green: 0.43, blue: 0.94).opacity(0.15)))
             Text(text).font(.subheadline)
+        }
+    }
+
+    /// A tappable row that jumps to a native iPhone app. iOS has no officially
+    /// documented scheme for Calendar/Contacts, but `calshow://` and `contacts://`
+    /// are long-standing and handled by the system apps; `open` fails silently via
+    /// its completion handler if a scheme is ever unavailable, so the row never
+    /// misbehaves.
+    private func openRow(_ title: String, systemImage: String, scheme: String) -> some View {
+        Button {
+            guard let url = URL(string: scheme) else { return }
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        } label: {
+            HStack {
+                Label(title, systemImage: systemImage)
+                    .foregroundColor(Color(red: 0.07, green: 0.43, blue: 0.94))
+                Spacer()
+                Image(systemName: "arrow.right")
+                    .foregroundColor(Color(red: 0.07, green: 0.43, blue: 0.94))
+            }
         }
     }
 
