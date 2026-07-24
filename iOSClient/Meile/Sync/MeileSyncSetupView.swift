@@ -88,27 +88,12 @@ struct MeileSyncSetupView: View {
 
     private func generate() {
         errorText = nil
-        let session = NCSession.shared.getSession(account: account)
-        guard let host = URL(string: session.urlBase)?.host, !session.user.isEmpty else {
+        guard let url = MeileMobileConfig.makeProfile(account: account) else {
             errorText = "Entre na sua conta M9 Box primeiro."
             return
         }
-        let data = MeileMobileConfig.build(
-            MeileMobileConfig.Input(
-                host: host,
-                username: session.user,
-                userId: session.userId.isEmpty ? session.user : session.userId,
-                displayName: "M9 Box (\(host))"
-            )
-        )
-        do {
-            let url = FileManager.default.temporaryDirectory.appendingPathComponent("M9 Box.mobileconfig")
-            try data.write(to: url, options: .atomic)
-            profileURL = url
-            showShare = true
-        } catch {
-            errorText = error.localizedDescription
-        }
+        profileURL = url
+        showShare = true
     }
 }
 

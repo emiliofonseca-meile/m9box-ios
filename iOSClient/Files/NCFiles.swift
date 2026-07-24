@@ -112,6 +112,9 @@ class NCFiles: NCCollectionViewCommon {
             fileNameBlink = nil
         }
 
+        // M9 Box: first-session offer to set up calendar/contacts sync.
+        MeileSyncOnboarding.maybeOffer(from: self, account: self.controller?.account)
+
         Task {
             // Plus Menu reload
             await self.mainNavigationController?.menuPlus?.create(session: session)

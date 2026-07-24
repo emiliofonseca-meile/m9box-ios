@@ -71,6 +71,27 @@ enum MeileMobileConfig {
         return Data(body.utf8)
     }
 
+    /// Resolve the signed-in account, build its profile and write it to a temp
+    /// `.mobileconfig`, returning the file URL. Shared by the sync screen and the
+    /// launch-time offer so there is one code path that produces the profile.
+    /// Returns nil if not signed in.
+    static func makeProfile(account: String) -> URL? {
+        let session = NCSession.shared.getSession(account: account)
+        guard let host = URL(string: session.urlBase)?.host, !session.user.isEmpty else {
+            return nil
+        }
+        let data = build(
+            Input(
+                host: host,
+                username: session.user,
+                userId: session.userId.isEmpty ? session.user : session.userId,
+                displayName: "M9 Box (\(host))"
+            )
+        )
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("M9 Box.mobileconfig")
+        return (try? data.write(to: url, options: .atomic)) != nil ? url : nil
+    }
+
     private static func accountPayload(
         type: String,
         keyPrefix: String,
