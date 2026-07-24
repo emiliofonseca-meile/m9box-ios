@@ -64,8 +64,11 @@ struct MeileSyncSetupView: View {
             }
 
             Section("Abrir no iPhone") {
-                openRow("Agenda", systemImage: "calendar", scheme: "calshow://")
-                openRow("Contatos", systemImage: "person.crop.circle", scheme: "contacts://")
+                openRow("Agenda", systemImage: "calendar", schemes: ["calshow://"])
+                // No single documented scheme opens Contacts across iOS versions;
+                // try the known candidates in order until one launches.
+                openRow("Contatos", systemImage: "person.crop.circle",
+                        schemes: ["addressbook://", "contacts://", "mobileaddressbook://"])
             }
 
             Section {
@@ -93,16 +96,24 @@ struct MeileSyncSetupView: View {
     /// are long-standing and handled by the system apps; `open` fails silently via
     /// its completion handler if a scheme is ever unavailable, so the row never
     /// misbehaves.
-    private func openRow(_ title: String, systemImage: String, scheme: String) -> some View {
+    private func openRow(_ title: String, systemImage: String, schemes: [String]) -> some View {
         Button {
-            guard let url = URL(string: scheme) else { return }
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            openFirst(schemes)
         } label: {
             HStack {
                 Label(title, systemImage: systemImage).foregroundColor(brandBlue)
                 Spacer()
                 Image(systemName: "arrow.right").foregroundColor(brandBlue)
             }
+        }
+    }
+
+    /// Try each scheme in turn; `open`'s completion reports whether a handler
+    /// existed, so we fall through to the next candidate when one isn't supported.
+    private func openFirst(_ schemes: [String]) {
+        guard let first = schemes.first, let url = URL(string: first) else { return }
+        UIApplication.shared.open(url, options: [:]) { success in
+            if !success { openFirst(Array(schemes.dropFirst())) }
         }
     }
 
