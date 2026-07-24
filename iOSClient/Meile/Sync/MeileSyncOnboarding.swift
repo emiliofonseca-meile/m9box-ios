@@ -12,11 +12,14 @@
 //  brings that flow to the front on first launch.
 //
 
+import SwiftUI
 import UIKit
 
 enum MeileSyncOnboarding {
 
-    private static let askedKey = "meile_sync_offer_asked"
+    // Bumped when the offer flow changes so a user who dismissed the older,
+    // broken version is offered the fixed one once.
+    private static let askedKey = "meile_sync_offer_asked_v2"
     /// Guards against re-presenting while the main files screen re-appears (it does
     /// so for every folder); the persisted flag guards across launches.
     private static var offeredThisSession = false
@@ -40,25 +43,27 @@ enum MeileSyncOnboarding {
             preferredStyle: .alert
         )
         alert.addAction(UIAlertAction(title: "Ativar", style: .default) { _ in
-            presentProfileInstall(from: viewController, account: account)
+            // Take the user to the sync screen (with the how-it-works steps and the
+            // generate button). Deferring past the alert's dismissal avoids the
+            // UIKit case where presenting/pushing inside the action handler is
+            // dropped while the alert is still animating away.
+            DispatchQueue.main.async {
+                openSyncScreen(from: viewController, account: account)
+            }
         })
         alert.addAction(UIAlertAction(title: "Agora não", style: .cancel))
         viewController.present(alert, animated: true)
     }
 
-    /// Build the profile and hand it to iOS to install (same as tapping the button
-    /// on the sync screen). The share sheet lets the user save/open it, which leads
-    /// to Settings → Install.
-    private static func presentProfileInstall(from viewController: UIViewController, account: String) {
-        guard let url = MeileMobileConfig.makeProfile(account: account) else { return }
-        let share = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-        // iPad: anchor the popover so it doesn't crash.
-        if let pop = share.popoverPresentationController {
-            pop.sourceView = viewController.view
-            pop.sourceRect = CGRect(x: viewController.view.bounds.midX,
-                                    y: viewController.view.bounds.midY, width: 0, height: 0)
-            pop.permittedArrowDirections = []
+    /// Push the sync setup screen — the same one reachable from More → Sync.
+    static func openSyncScreen(from viewController: UIViewController, account: String) {
+        let host = UIHostingController(rootView: MeileSyncSetupView(account: account))
+        host.title = NSLocalizedString("_meile_sync_", comment: "")
+        if let nav = viewController.navigationController {
+            nav.pushViewController(host, animated: true)
+        } else {
+            let nav = UINavigationController(rootViewController: host)
+            viewController.present(nav, animated: true)
         }
-        viewController.present(share, animated: true)
     }
 }
