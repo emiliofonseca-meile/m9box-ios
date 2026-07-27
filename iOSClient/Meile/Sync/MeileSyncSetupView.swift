@@ -146,6 +146,9 @@ struct MeileSyncSetupView: View {
         if summary.pushedEvents + summary.pushedContacts > 0 {
             line += " · enviados: \(summary.pushedEvents + summary.pushedContacts)"
         }
+        if let container = summary.contactContainer {
+            line += "\nContatos em: \(container)"
+        }
         resultText = line
         if let e = summary.error { errorText = e }
     }
