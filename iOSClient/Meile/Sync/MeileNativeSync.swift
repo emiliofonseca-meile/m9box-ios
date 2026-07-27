@@ -28,6 +28,7 @@ struct MeileSyncSummary {
     var addressBooks = 0
     var pushedEvents = 0
     var pushedContacts = 0
+    var contactContainer: String?
     var error: String?
 }
 
@@ -304,6 +305,7 @@ final class MeileNativeSync {
             summary.error = appendError(summary.error, "Não foi possível criar o grupo de contatos.")
             return
         }
+        summary.contactContainer = containerLabel(store, groupId: group.identifier)
 
         let client = MeileCardDavClient(baseURL: creds.baseURL, authHeader: creds.authHeader, userId: creds.userId)
         let books: [MeileAddressBook]
@@ -359,6 +361,23 @@ final class MeileNativeSync {
             map.removeValue(forKey: href)
         }
         saveContactMap(map, account: account)
+    }
+
+    /// Human-readable name+type of the container the group lives in, so we can
+    /// tell from the UI whether contacts landed in iCloud (syncs to Mac) or a
+    /// device-local container (iPhone only).
+    private func containerLabel(_ store: CNContactStore, groupId: String) -> String {
+        guard let container = try? store.containers(matching:
+            CNContainer.predicateForContainerOfGroup(withIdentifier: groupId)).first else { return "?" }
+        let type: String
+        switch container.type {
+        case .local: type = "local"
+        case .cardDAV: type = "iCloud/CardDAV"
+        case .exchange: type = "Exchange"
+        default: type = "outro"
+        }
+        let name = container.name.isEmpty ? "-" : container.name
+        return "\(name) [\(type)]"
     }
 
     private func ensureGroup(_ store: CNContactStore) -> CNGroup? {
