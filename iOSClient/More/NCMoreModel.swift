@@ -142,6 +142,9 @@ final class NCMoreModel: ObservableObject {
         /// M9 Box: opens the CalDAV/CardDAV device-sync (.mobileconfig) setup.
         case meileSync
 
+        /// M9 Box: opens the in-app Tasks (VTODO over CalDAV).
+        case meileTasks
+
         /// No-op destination.
         case none
     }
@@ -299,6 +302,15 @@ final class NCMoreModel: ObservableObject {
             )
         )
 
+        // M9 Box: tasks (Nextcloud Tasks / webmail tasks), next to the Agenda/Contatos sync.
+        functionItems.append(
+            Item(
+                titleKey: "_meile_tasks_",
+                image: "checklist",
+                destination: .meileTasks
+            )
+        )
+
         settingsItems.append(
             Item(
                 titleKey: "_settings_",
@@ -364,6 +376,9 @@ final class NCMoreModel: ObservableObject {
 
         case .meileSync:
             openMeileSync()
+
+        case .meileTasks:
+            openMeileTasks()
 
         case .none:
             break
@@ -546,6 +561,16 @@ final class NCMoreModel: ObservableObject {
         syncController.title = NSLocalizedString("_meile_sync_", comment: "")
 
         navigationController.pushViewController(syncController, animated: true)
+    }
+
+    /// M9 Box: opens the in-app Tasks screen for the signed-in account.
+    private func openMeileTasks() {
+        guard let controller,
+              let navigationController = controller.currentNavigationController(),
+              let tasks = MeileTasksTab.makeViewController(account: controller.account) else {
+            return
+        }
+        navigationController.pushViewController(tasks, animated: true)
     }
 
     /// Opens the SwiftUI auto-upload screen, injecting the shared counter so the row and the
