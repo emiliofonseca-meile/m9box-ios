@@ -37,7 +37,7 @@ struct MeileSyncSetupView: View {
                 Text("Sincronizar Agenda e Contatos")
                     .font(.title3).bold()
                     .foregroundColor(brandBlue)
-                Text("Sua agenda e seus contatos do M9 Box aparecem no Calendário e nos Contatos do iPhone.")
+                Text("Sua agenda e seus contatos do M9 Box aparecem no Calendário e nos Contatos do iPhone. Suas tarefas ficam na tela Tarefas do app.")
                     .font(.subheadline)
             }
 
@@ -73,6 +73,17 @@ struct MeileSyncSetupView: View {
                 // try the known candidates in order until one launches.
                 openRow("Contatos", systemImage: "person.crop.circle",
                         schemes: ["addressbook://", "contacts://", "mobileaddressbook://"])
+                // Tasks live inside the app (the Box tasks lists are not mirrored into Reminders).
+                Button {
+                    MeileTasksTab.pushOnVisibleStack(account: account)
+                } label: {
+                    HStack {
+                        Label(NSLocalizedString("_meile_tasks_", comment: ""), systemImage: "checklist")
+                            .foregroundColor(brandBlue)
+                        Spacer()
+                        Image(systemName: "arrow.right").foregroundColor(brandBlue)
+                    }
+                }
             }
 
             Section {
