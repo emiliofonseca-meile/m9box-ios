@@ -79,7 +79,10 @@ enum MeileMultiStatus {
         return response.child(NS_DAV, "propstat")?.child(NS_DAV, "prop")
     }
 
-    static func parseCalendars(_ data: Data, ownHref: String) -> [MeileCalendarCollection] {
+    /// `component` is the iCalendar component the caller needs ("VEVENT" for the
+    /// agenda, "VTODO" for tasks): collections that explicitly list other components
+    /// only are skipped. A missing or empty component set accepts everything.
+    static func parseCalendars(_ data: Data, ownHref: String, component: String = "VEVENT") -> [MeileCalendarCollection] {
         var result = [MeileCalendarCollection]()
         for response in responses(data) {
             guard let href = response.firstText(NS_DAV, "href")?.trimmingCharacters(in: .whitespaces) else { continue }
@@ -90,9 +93,9 @@ enum MeileMultiStatus {
             if !isCalendar { continue }
 
             if let compSet = prop.child(NS_CALDAV, "supported-calendar-component-set") {
-                let supportsVEvent = compSet.childrenOf(NS_CALDAV, "comp").isEmpty ||
-                    compSet.childrenOf(NS_CALDAV, "comp").contains { $0.attribute("name")?.uppercased() == "VEVENT" }
-                if !supportsVEvent { continue }
+                let comps = compSet.childrenOf(NS_CALDAV, "comp")
+                let supported = comps.isEmpty || comps.contains { $0.attribute("name")?.uppercased() == component }
+                if !supported { continue }
             }
 
             var readOnly = false
@@ -168,6 +171,27 @@ enum MeileCalDavBodies {
             <c:time-range start="\(utcStamp(start))" end="\(utcStamp(end))"/>
           </c:comp-filter></c:comp-filter></c:filter>
         </c:calendar-query>
+        """
+    }
+
+    /// All VTODO objects of a task list (no time-range: tasks may have no dates).
+    static let todoQuery = """
+    <?xml version="1.0" encoding="utf-8" ?>
+    <c:calendar-query xmlns:d="DAV:" xmlns:c="urn:ietf:params:xml:ns:caldav">
+      <d:prop><d:getetag/><c:calendar-data/></d:prop>
+      <c:filter><c:comp-filter name="VCALENDAR"><c:comp-filter name="VTODO"/></c:comp-filter></c:filter>
+    </c:calendar-query>
+    """
+
+    static func mkcalendarTasks(name: String) -> String {
+        let safe = name.replacingOccurrences(of: "&", with: "&amp;").replacingOccurrences(of: "<", with: "&lt;")
+        return """
+        <?xml version="1.0" encoding="utf-8" ?>
+        <c:mkcalendar xmlns:d="DAV:" xmlns:c="urn:ietf:params:xml:ns:caldav">
+          <d:set><d:prop><d:displayname>\(safe)</d:displayname>
+            <c:supported-calendar-component-set><c:comp name="VTODO"/></c:supported-calendar-component-set>
+          </d:prop></d:set>
+        </c:mkcalendar>
         """
     }
 
