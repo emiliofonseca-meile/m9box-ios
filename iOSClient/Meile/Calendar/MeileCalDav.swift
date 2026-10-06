@@ -42,6 +42,9 @@ final class MeileCalDavClient {
     private func request(_ href: String, method: String, body: String?, depth: String?) -> URLRequest {
         var req = URLRequest(url: url(href))
         req.httpMethod = method
+        // A cached GET would hand back a stale ETag, and the If-Match that follows
+        // would then fail with 412 on an object nobody else touched.
+        req.cachePolicy = .reloadIgnoringLocalCacheData
         req.setValue(authHeader, forHTTPHeaderField: "Authorization")
         if let depth = depth { req.setValue(depth, forHTTPHeaderField: "Depth") }
         if let body = body {
