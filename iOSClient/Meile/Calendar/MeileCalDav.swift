@@ -64,6 +64,26 @@ final class MeileCalDavClient {
         return MeileMultiStatus.parseCalendars(data, ownHref: calendarHome)
     }
 
+    /// Collections that accept VTODO (NC Tasks lists, or calendars with both).
+    func discoverTaskLists() async throws -> [MeileCalendarCollection] {
+        let req = request(calendarHome, method: "PROPFIND", body: MeileCalDavBodies.propfindCalendars, depth: "1")
+        let (_, data, _) = try await send(req, op: "discoverTaskLists", expected: [207])
+        return MeileMultiStatus.parseCalendars(data, ownHref: calendarHome, component: "VTODO")
+    }
+
+    func listTodos(calendarHref: String) async throws -> [MeileRemoteResource] {
+        let req = request(calendarHref, method: "REPORT", body: MeileCalDavBodies.todoQuery, depth: "1")
+        let (_, data, _) = try await send(req, op: "listTodos", expected: [207])
+        return MeileMultiStatus.parseResources(data)
+    }
+
+    /// MKCALENDAR a VTODO-only list (same shape the Nextcloud Tasks app creates).
+    func createTaskList(name: String) async throws {
+        let slug = "tarefas-" + UUID().uuidString.prefix(8).lowercased()
+        let req = request("\(calendarHome)\(slug)/", method: "MKCALENDAR", body: MeileCalDavBodies.mkcalendarTasks(name: name), depth: nil)
+        _ = try await send(req, op: "createTaskList", expected: [201])
+    }
+
     func listEvents(calendarHref: String, start: Date, end: Date) async throws -> [MeileRemoteResource] {
         let body = MeileCalDavBodies.calendarQuery(start: start, end: end)
         let req = request(calendarHref, method: "REPORT", body: body, depth: "1")

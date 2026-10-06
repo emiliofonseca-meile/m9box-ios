@@ -242,7 +242,7 @@ enum MeileICal {
         )
     }
 
-    private static func parseProperty(_ line: String) -> (name: String, params: [String: String], value: String)? {
+    static func parseProperty(_ line: String) -> (name: String, params: [String: String], value: String)? {
         guard let colon = line.firstIndex(of: ":") else { return nil }
         let namePart = String(line[line.startIndex..<colon])
         let value = String(line[line.index(after: colon)...])
@@ -547,14 +547,14 @@ enum MeileICal {
         return df.string(from: date)
     }
 
-    private static func escape(_ s: String) -> String {
+    static func escape(_ s: String) -> String {
         s.replacingOccurrences(of: "\\", with: "\\\\")
             .replacingOccurrences(of: ";", with: "\\;")
             .replacingOccurrences(of: ",", with: "\\,")
             .replacingOccurrences(of: "\n", with: "\\n")
     }
 
-    private static func unescape(_ s: String) -> String {
+    static func unescape(_ s: String) -> String {
         s.replacingOccurrences(of: "\\n", with: "\n")
             .replacingOccurrences(of: "\\,", with: ",")
             .replacingOccurrences(of: "\\;", with: ";")
