@@ -846,3 +846,4 @@ You can stop it at any time, adjust the settings, and enable it again.";
 "_tasks_completed_" = "Completed";
 "_tasks_conflict_" = "This task was changed elsewhere. The list was reloaded; try again.";
 "_tasks_http_error_" = "Could not reach your tasks (error %d).";
+"_meile_sync_intro_" = "Your calendar and contacts from M9 Box appear in the iPhone Calendar and Contacts. Your tasks are on the Tasks screen of the app.";
