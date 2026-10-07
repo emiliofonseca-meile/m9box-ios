@@ -11,8 +11,7 @@ import SwiftUI
 
 struct MeileTasksView: View {
     @StateObject private var viewModel: MeileTasksViewModel
-    @State private var editorTask: MeileTask?
-    @State private var showEditor = false
+    @State private var editor: EditorTarget?
     @State private var showNewList = false
     @State private var newListName = ""
 
@@ -22,6 +21,14 @@ struct MeileTasksView: View {
 
     var body: some View {
         List {
+            // In the list, not the toolbar: the main navigation controller replaces the trailing
+            // items of every pushed screen with its own (notifications, transfers).
+            Section {
+                Button { editor = EditorTarget(task: nil) } label: {
+                    Label(NSLocalizedString("_tasks_new_", comment: ""), systemImage: "plus")
+                }
+                .disabled(viewModel.selected == nil)
+            }
             if let error = viewModel.error {
                 Text(error).foregroundColor(.red).font(.footnote)
             }
@@ -52,16 +59,10 @@ struct MeileTasksView: View {
         .overlay { if viewModel.loading { ProgressView() } }
         .navigationTitle(NSLocalizedString("_meile_tasks_", comment: ""))
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button { editorTask = nil; showEditor = true } label: { Image(systemName: "plus") }
-                    .disabled(viewModel.selected == nil)
-                    .accessibilityLabel(NSLocalizedString("_tasks_new_", comment: ""))
-            }
-        }
         .refreshable { viewModel.reload(discover: true) }
-        .sheet(isPresented: $showEditor) {
-            MeileTaskEditor(task: editorTask) { draft in viewModel.save(draft, editing: editorTask) }
+        // item: the sheet content is built from the tapped task, not from state read before it was set.
+        .sheet(item: $editor) { target in
+            MeileTaskEditor(task: target.task) { draft in viewModel.save(draft, editing: target.task) }
         }
         .alert(NSLocalizedString("_tasks_create_list_", comment: ""), isPresented: $showNewList) {
             TextField(NSLocalizedString("_tasks_list_name_", comment: ""), text: $newListName)
@@ -103,7 +104,7 @@ struct MeileTasksView: View {
             Spacer()
         }
         .contentShape(Rectangle())
-        .onTapGesture { editorTask = task; showEditor = true }
+        .onTapGesture { editor = EditorTarget(task: task) }
         .swipeActions {
             Button(role: .destructive) { viewModel.delete(task) } label: {
                 Label(NSLocalizedString("_delete_", comment: ""), systemImage: "trash")
@@ -114,6 +115,11 @@ struct MeileTasksView: View {
     private func dueText(_ date: Date, allDay: Bool) -> String {
         date.formatted(allDay ? .dateTime.day().month().year() : .dateTime.day().month().year().hour().minute())
     }
+}
+
+private struct EditorTarget: Identifiable {
+    let id = UUID()
+    let task: MeileTask?
 }
 
 struct MeileTaskEditor: View {
