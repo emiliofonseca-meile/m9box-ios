@@ -2,10 +2,13 @@
 //  M9 Box - Meile branded Nextcloud client
 //  SPDX-License-Identifier: GPL-3.0-or-later
 //
-//  Task lists and tasks over CalDAV. Like the calendar repository, every write
-//  re-fetches the resource first and PUTs with If-Match, so an edit made from
-//  another client (webmail, Nextcloud Tasks) is never silently overwritten: a
-//  stale write comes back as HTTP 412 and the screen reloads.
+//  Task lists and tasks over CalDAV. Writes send the ETag the screen loaded
+//  (task.etag) as If-Match, so an edit made from another client (webmail,
+//  Nextcloud Tasks) after the list was loaded is never silently overwritten: the
+//  write comes back as HTTP 412 and the screen reloads. update() re-fetches the
+//  ICS only as the base for applyEdit (keeps unknown properties and VALARMs).
+//  setCompleted() rebuilds its draft from the loaded task, which is safe because
+//  the same If-Match guarantees the server copy still equals that task.
 //
 
 import Foundation
@@ -34,7 +37,7 @@ final class MeileTasksRepository {
     func update(_ task: MeileTask, draft: MeileTaskDraft) async throws {
         let existing = try await client.getResource(href: task.resourceHref)
         let ics = MeileVTodo.applyEdit(existingICS: existing.ics, draft: draft)
-        try await client.putResource(href: task.resourceHref, ics: ics, ifMatch: existing.etag, isNew: false)
+        try await client.putResource(href: task.resourceHref, ics: ics, ifMatch: task.etag, isNew: false)
     }
 
     func setCompleted(_ task: MeileTask, _ completed: Bool) async throws {
@@ -44,7 +47,6 @@ final class MeileTasksRepository {
     }
 
     func delete(_ task: MeileTask) async throws {
-        let existing = try await client.getResource(href: task.resourceHref)
-        try await client.deleteResource(href: task.resourceHref, ifMatch: existing.etag)
+        try await client.deleteResource(href: task.resourceHref, ifMatch: task.etag)
     }
 }

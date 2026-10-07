@@ -35,13 +35,19 @@ func run() async throws {
     t = tasks.first { $0.title == stamp + " editada" }!
     check(t.due == nil && t.notes == nil, "edit applied on server")
 
-    // Stale write: someone else changes the task after we loaded it -> 412, not a lost update.
+    // Stale write through the repository: another client edits after we loaded `t`.
     let other = try await client.getResource(href: t.resourceHref)
     try await client.putResource(href: t.resourceHref, ics: other.ics.replacingOccurrences(of: "SUMMARY:", with: "SUMMARY:outro cliente "), ifMatch: other.etag, isNew: false)
-    do {
-        _ = try await client.putResource(href: t.resourceHref, ics: other.ics, ifMatch: t.etag, isNew: false)
-        check(false, "stale If-Match must be rejected")
-    } catch let e as MeileCalDavError { check(e.code == 412, "stale write rejected with 412 (got \(e.code))") }
+    func rejects(_ what: String, _ op: () async throws -> Void) async {
+        do { try await op(); check(false, "\(what) with stale task must be rejected") }
+        catch let e as MeileCalDavError { check(e.code == 412, "\(what) stale -> 412 (got \(e.code))") }
+        catch { check(false, "\(what) unexpected error \(error)") }
+    }
+    await rejects("repo.update") { try await repo.update(t, draft: MeileTaskDraft(title: "stale", notes: nil, due: nil, dueAllDay: false, completed: false, priority: 0)) }
+    await rejects("repo.setCompleted") { try await repo.setCompleted(t, true) }
+    await rejects("repo.delete") { try await repo.delete(t) }
+    tasks = try await repo.loadTasks(list: list)
+    check(tasks.contains { $0.title.hasPrefix("outro cliente") && !$0.completed } && !tasks.contains { $0.title == "stale" }, "other client's change survived")
 
     tasks = try await repo.loadTasks(list: list)
     t = tasks.first { $0.title.hasPrefix("outro cliente") }!
