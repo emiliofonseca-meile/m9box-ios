@@ -37,7 +37,7 @@ struct MeileSyncSetupView: View {
                 Text("Sincronizar Agenda e Contatos")
                     .font(.title3).bold()
                     .foregroundColor(brandBlue)
-                Text("Sua agenda e seus contatos do M9 Box aparecem no Calendário e nos Contatos do iPhone. Suas tarefas ficam na tela Tarefas do app.")
+                Text(NSLocalizedString("_meile_sync_intro_", comment: ""))
                     .font(.subheadline)
             }
 
