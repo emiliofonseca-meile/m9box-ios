@@ -80,11 +80,10 @@ final class NCUtility: NSObject, Sendable {
     }
 
     func getCustomUserAgentOnlyOffice() -> String {
-        let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString")!
         if UIDevice.current.userInterfaceIdiom == .pad {
-            return "Mozilla/5.0 (iPad) Nextcloud-iOS/\(appVersion)"
+            return "Mozilla/5.0 (iPad) Nextcloud-iOS/\(upstreamVersion)"
         } else {
-            return "Mozilla/5.0 (iPhone) Mobile Nextcloud-iOS/\(appVersion)"
+            return "Mozilla/5.0 (iPhone) Mobile Nextcloud-iOS/\(upstreamVersion)"
         }
     }
 
