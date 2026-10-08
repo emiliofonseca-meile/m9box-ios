@@ -54,7 +54,7 @@ class NCSettingsModel: ObservableObject, ViewOnAppearHandling {
         privacyScreen = keychain.privacyScreenEnabled
         resetWrongAttempts = keychain.resetAppCounterFail
         accountRequest = keychain.accountRequest
-        footerApp = String(format: NCBrandOptions.shared.textCopyrightNextcloudiOS, NCUtility().getVersionBuild()) + "\n\n"
+        footerApp = String(format: NCBrandOptions.shared.textCopyrightNextcloudiOS, NCUtility().getVersionMaintenance()) + "\n\n"
         footerServer = String(format: NCBrandOptions.shared.textCopyrightNextcloudServer, capabilities.serverVersion) + "\n"
         footerSlogan = capabilities.themingName + " - " + capabilities.themingSlogan + "\n\n"
     }

@@ -62,7 +62,8 @@ struct NCDirectEditorAdapter {
     }
 
     private static func mobileWebEditorUserAgent() -> String {
-        let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
+        // M9 Box: the server gates on the upstream release, never the version shown to users.
+        let appVersion = upstreamVersion
         if UIDevice.current.userInterfaceIdiom == .pad {
             return "Mozilla/5.0 (iPad) Nextcloud-iOS/\(appVersion)"
         }

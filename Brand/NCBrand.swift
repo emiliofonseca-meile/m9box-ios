@@ -5,11 +5,18 @@
 import UIKit
 import NextcloudKit
 
+/// Upstream Nextcloud iOS release this fork is based on (update it when rebasing on a new upstream tag).
+/// The server reads the client version from the User-Agent and gates features on it, so the
+/// User-Agent carries this and never the version shown to users.
+///
+/// The version users see is MARKETING_VERSION in the project build settings: 1.0.N, with N + 1 on
+/// every store build. Only the owner moves it to 1.1.0.
+let upstreamVersion = "33.0.10"
+
 let userAgent: String = {
-    let appVersion: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
-    // Original Nextcloud useragent "Mozilla/5.0 (iOS) Nextcloud-iOS/\(appVersion)-Nextcloud"
+    // Original Nextcloud useragent "Mozilla/5.0 (iOS) Nextcloud-iOS/\(upstreamVersion)-Nextcloud"
     let suffixBrand = NCBrandOptions.shared.brandUserAgent.isEmpty ? "" : "-\(NCBrandOptions.shared.brandUserAgent)"
-    return "Mozilla/5.0 (iOS) Nextcloud-iOS/\(appVersion)\(suffixBrand)"
+    return "Mozilla/5.0 (iOS) Nextcloud-iOS/\(upstreamVersion)\(suffixBrand)"
 }()
 
  /*
