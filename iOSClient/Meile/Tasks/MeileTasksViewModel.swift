@@ -19,9 +19,14 @@ final class MeileTasksViewModel: ObservableObject {
 
     init(repository: MeileTasksRepository) { self.repository = repository }
 
-    var visibleTasks: [MeileTask] {
-        tasks.filter { showCompleted || !$0.completed }.sorted {
-            if $0.completed != $1.completed { return !$0.completed }
+    /// Open tasks first, then completed ones (when shown); each section is its own tree.
+    var visibleTasks: [MeileTaskNode] {
+        MeileTaskTree.flatten(sorted(tasks.filter { !$0.completed }))
+            + (showCompleted ? MeileTaskTree.flatten(sorted(tasks.filter { $0.completed })) : [])
+    }
+
+    private func sorted(_ list: [MeileTask]) -> [MeileTask] {
+        list.sorted {
             switch ($0.due, $1.due) {
             case let (a?, b?): return a < b
             case (_?, nil): return true

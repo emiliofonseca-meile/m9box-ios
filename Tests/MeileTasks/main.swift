@@ -56,5 +56,64 @@ let built = MeileVTodo.buildICS(MeileTaskDraft(title: "X", notes: "n", due: due,
 let back = MeileVTodo.parse(list: list, resource: MeileRemoteResource(href: "h", etag: nil, ics: built))
 check(back.count == 1 && back[0].due.map { abs($0.timeIntervalSince(due)) < 1 } == true && back[0].priority == 5, "build -> parse round trip")
 
+// 6. RELATED-TO -> parentUid: absent / plain / PARENT / CHILD / SIBLING / params / folded / empty.
+func parent(_ lines: String...) -> String? {
+    let ics = "BEGIN:VCALENDAR\r\nBEGIN:VTODO\r\nUID:k@x\r\nSUMMARY:k\r\n" + lines.joined(separator: "\r\n") + "\r\nEND:VTODO\r\nEND:VCALENDAR\r\n"
+    return MeileVTodo.parse(list: list, resource: MeileRemoteResource(href: "h", etag: nil, ics: ics)).first?.parentUid
+}
+check(parent("STATUS:NEEDS-ACTION") == nil, "no RELATED-TO -> nil")
+check(parent("RELATED-TO:p1") == "p1", "plain RELATED-TO")
+check(parent("RELATED-TO;RELTYPE=PARENT:p2") == "p2", "RELTYPE=PARENT")
+check(parent("RELATED-TO;reltype=parent:p3") == "p3", "reltype case-insensitive")
+check(parent("RELATED-TO;RELTYPE=CHILD:c1") == nil, "RELTYPE=CHILD ignored")
+check(parent("RELATED-TO;RELTYPE=SIBLING:s1") == nil, "RELTYPE=SIBLING ignored")
+check(parent("RELATED-TO;RELTYPE=CHILD:c1", "RELATED-TO:p4", "RELATED-TO:p5") == "p4", "first parent wins, child skipped")
+check(parent("RELATED-TO;X-FOO=bar;RELTYPE=PARENT:p6") == "p6", "extra params")
+check(parent("RELATED-TO:abc", " def") == "abcdef", "folded line")
+check(parent("RELATED-TO:   ") == nil, "empty value -> nil")
+check(parent("RELATED-TO:  p7  ") == "p7", "value trimmed")
+
+// 7. Edits keep RELATED-TO (also when completing).
+let sub = "BEGIN:VCALENDAR\r\nBEGIN:VTODO\r\nUID:s@x\r\nSUMMARY:sub\r\nRELATED-TO;RELTYPE=PARENT:p@x\r\nEND:VTODO\r\nEND:VCALENDAR\r\n"
+let subEdit = MeileVTodo.applyEdit(existingICS: sub, draft: MeileTaskDraft(title: "sub2", notes: nil, due: nil, dueAllDay: false, completed: true, priority: 0), now: Date())
+check(subEdit.contains("RELATED-TO;RELTYPE=PARENT:p@x"), "edit/complete keeps RELATED-TO")
+check(MeileVTodo.parse(list: list, resource: MeileRemoteResource(href: "h", etag: nil, ics: subEdit)).first?.parentUid == "p@x", "parentUid after edit")
+
+// 8. Tree.
+func task(_ uid: String, _ parent: String? = nil, done: Bool = false, list: String = "L") -> MeileTask {
+    MeileTask(uid: uid, listHref: list, resourceHref: "\(list)/\(uid).ics", etag: nil, title: uid, notes: nil, due: nil,
+              dueAllDay: false, completed: done, priority: 0, recurring: false, parentUid: parent)
+}
+func shape(_ tasks: [MeileTask]) -> String { MeileTaskTree.flatten(tasks).map { String(repeating: ">", count: $0.depth) + $0.task.uid }.joined(separator: " ") }
+check(shape([task("a"), task("b", "a"), task("c", "b"), task("d")]) == "a >b >>c d", "3 levels")
+check(shape([task("b", "a"), task("a"), task("c", "a")]) == "a >b >c", "child listed before parent, siblings keep section order")
+check(shape([task("o", "gone")]) == "o", "orphan is a root")
+check(shape([task("a", "a")]) == "a", "self parent is a root")
+check(shape([task("x", "y"), task("y", "x"), task("z", "y")]) == "x >y >>z", "cycle: no loop, nothing lost")
+check(shape([task("a"), task("b", "a", list: "M")]) == "a b", "parent must be in the same list")
+let dup = [task("a"), MeileTask(uid: "a", listHref: "L", resourceHref: "L/a2.ics", etag: nil, title: "a2", notes: nil, due: nil, dueAllDay: false, completed: false, priority: 0, recurring: false, parentUid: nil), task("c", "a")]
+check(MeileTaskTree.flatten(dup).map { "\($0.depth)\($0.task.title)" } == ["0a", "1c", "0a2"], "duplicate uid: first in section order is the parent")
+let openChild = [task("p", done: true), task("c", "p"), task("q", done: true), task("d", "q", done: true)]
+check(shape(openChild.filter { !$0.completed }) == "c" && shape(openChild.filter { $0.completed }) == "p q >d", "open child of done parent is a root of the open section")
+
+// 9. Real server responses (CalDAV REPORT), through the app's own parsing path.
+func fixture(_ name: String, _ href: String) -> [MeileTask] {
+    let data = FileManager.default.contents(atPath: "Tests/MeileTasks/fixtures/\(name).xml")!
+    let l = MeileCalendarCollection(href: href, displayName: name, color: nil, ctag: nil, syncToken: nil, readOnly: false)
+    return MeileMultiStatus.parseResources(data).flatMap { MeileVTodo.parse(list: l, resource: $0) }
+        .sorted { $0.title < $1.title }  // stable order for the test
+}
+func titles(_ tasks: [MeileTask]) -> String { MeileTaskTree.flatten(tasks).map { String(repeating: ">", count: $0.depth) + $0.task.title }.joined(separator: " | ") }
+let tarefas = fixture("hier-tarefas-2", "/hier-tarefas-2/")
+check(tarefas.count == 5, "Tasks app fixture: 5 tasks")
+check(titles(tarefas.filter { !$0.completed }) == "tarefa 4 | tarefas (hier-tarefas-2) | >nova sub RC | >tarefa 1", "Tasks app open section (child of completed parent is root): \(titles(tarefas.filter { !$0.completed }))")
+check(titles(tarefas.filter { $0.completed }) == "tarefa 2", "Tasks app done section")
+let deck = fixture("app-generated--deck--board-2", "/deck/")
+check(deck.count == 6, "Deck fixture: 6 tasks")
+check(titles(deck) == "List : Aprovação | >Cartão 1 de Aprovação | >Cartão 2 de Aprovação | List : Concluído | >Cartão 1 de Concluído | >Cartão 2 de Concluído", "Deck cards sit under their stack: \(titles(deck))")
+let ctl = fixture("hier-controle", "/hier-controle/")
+check(ctl.count == 10, "mixed fixture: 10 tasks")
+check(titles(ctl) == "tarefas (hier-controle) | >tarefa 1 | >tarefa 3 | >>tarefa 2 | >>>tarefa 4 | tarefas (hier-tarefas-5) | >tarefa 1 | >tarefa 3 | >>tarefa 2 | >>>tarefa 4", "mixed fixture, two trees: \(titles(ctl))")
+
 print(failures == 0 ? "ALL PASSED" : "\(failures) FAILED")
 exit(failures == 0 ? 0 : 1)
