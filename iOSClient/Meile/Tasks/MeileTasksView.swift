@@ -44,8 +44,8 @@ struct MeileTasksView: View {
                 }
             } else {
                 Section {
-                    ForEach(viewModel.visibleTasks) { task in
-                        row(task)
+                    ForEach(viewModel.visibleTasks) { node in
+                        row(node.task).padding(.leading, CGFloat(min(node.depth, 5)) * 20)
                     }
                     if viewModel.visibleTasks.isEmpty && !viewModel.loading {
                         Text(NSLocalizedString("_tasks_empty_", comment: "")).foregroundColor(.secondary)

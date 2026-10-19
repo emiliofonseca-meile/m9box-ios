@@ -22,6 +22,7 @@ struct MeileTask: Identifiable, Hashable {
     var completed: Bool
     var priority: Int          // RFC 5545: 0 = none, 1 = highest ... 9 = lowest
     var recurring: Bool
+    var parentUid: String?     // RELATED-TO (no RELTYPE or PARENT): Nextcloud Tasks subtasks and Deck cards
     var id: String { resourceHref }
 }
 
@@ -67,6 +68,7 @@ enum MeileVTodo {
         var due: (date: Date, allDay: Bool, tz: TimeZone)?
         var priority = 0
         var hasCompletedStamp = false, recurring = false, isOverride = false
+        var parentUid: String?, hasParent = false
         for p in props {
             switch p.name {
             case "UID": uid = p.value
@@ -78,6 +80,14 @@ enum MeileVTodo {
             case "PRIORITY": priority = Int(p.value) ?? 0
             case "RRULE": recurring = true
             case "RECURRENCE-ID": isOverride = true
+            case "RELATED-TO":
+                // First PARENT link wins; RELTYPE=CHILD/SIBLING point elsewhere.
+                let type = p.params["RELTYPE"]?.trimmingCharacters(in: CharacterSet(charactersIn: "\" ")).uppercased()
+                if !hasParent, type == nil || type == "PARENT" {
+                    hasParent = true
+                    let value = p.value.trimmingCharacters(in: .whitespaces)
+                    parentUid = value.isEmpty ? nil : value
+                }
             default: break
             }
         }
@@ -86,7 +96,7 @@ enum MeileVTodo {
         return MeileTask(uid: uid, listHref: list.href, resourceHref: resource.href, etag: resource.etag,
                          title: title, notes: notes, due: due?.date, dueAllDay: due?.allDay ?? false,
                          completed: status == "COMPLETED" || hasCompletedStamp, priority: priority,
-                         recurring: recurring)
+                         recurring: recurring, parentUid: parentUid)
     }
 
     // MARK: Write
@@ -166,5 +176,39 @@ enum MeileVTodo {
         df.timeZone = tz
         df.dateFormat = pattern
         return df.string(from: date)
+    }
+}
+
+/// One row of the tasks screen: a task and how deep it sits under its parents.
+struct MeileTaskNode: Identifiable {
+    let task: MeileTask
+    let depth: Int
+    var id: String { task.id }
+}
+
+enum MeileTaskTree {
+    /// Depth-first rows for ONE section (open or done), already filtered and in display order.
+    /// A parent is a task of the same section and list whose uid is `parentUid` (first in section
+    /// order wins on duplicate uids); a child whose parent is in the other section is a root here.
+    /// Cycle members are never reached from a root, so they are emitted afterwards as roots.
+    static func flatten(_ tasks: [MeileTask]) -> [MeileTaskNode] {
+        var byKey = [String: Int]()
+        for (i, t) in tasks.enumerated() where byKey[t.listHref + "\n" + t.uid] == nil { byKey[t.listHref + "\n" + t.uid] = i }
+        var children = [Int: [Int]]()
+        var roots = [Int]()
+        for (i, t) in tasks.enumerated() {
+            if let uid = t.parentUid, let p = byKey[t.listHref + "\n" + uid], p != i { children[p, default: []].append(i) }
+            else { roots.append(i) }
+        }
+        var out = [MeileTaskNode]()
+        var visited = Set<Int>()
+        func visit(_ i: Int, _ depth: Int) {
+            guard visited.insert(i).inserted else { return }
+            out.append(MeileTaskNode(task: tasks[i], depth: depth))
+            for c in children[i] ?? [] { visit(c, depth + 1) }
+        }
+        for r in roots { visit(r, 0) }
+        for i in tasks.indices { visit(i, 0) }
+        return out
     }
 }
