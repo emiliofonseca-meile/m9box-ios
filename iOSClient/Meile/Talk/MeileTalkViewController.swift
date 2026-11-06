@@ -72,6 +72,9 @@ final class MeileTalkViewController: UIViewController, WKNavigationDelegate, WKU
 
     override func loadView() {
         let config = WKWebViewConfiguration()
+        // Sem dados persistentes, como os outros viewers do app: nada do Talk de uma conta fica
+        // para a próxima (a sessão vem do aquecimento a cada abertura).
+        config.websiteDataStore = .nonPersistent()
         config.allowsInlineMediaPlayback = true
         config.mediaTypesRequiringUserActionForPlayback = []
         // O Talk marca navegador sem "Version/… Safari/…" como sem suporte e avisa na tela;
@@ -264,15 +267,27 @@ final class MeileTalkViewController: UIViewController, WKNavigationDelegate, WKU
         completionHandler(file)
     }
 
-    // baixou: folha de compartilhamento (Salvar em Arquivos, abrir em outro app...)
+    // baixou: folha de compartilhamento (Salvar em Arquivos, abrir em outro app...); fechada, a
+    // cópia temporária some
     func downloadDidFinish(_ download: WKDownload) {
         guard let file = downloaded.removeValue(forKey: ObjectIdentifier(download)) else { return }
+        let dir = file.deletingLastPathComponent()
+        guard view.window != nil else {
+            try? FileManager.default.removeItem(at: dir)
+            return
+        }
         let share = UIActivityViewController(activityItems: [file], applicationActivities: nil)
+        share.completionWithItemsHandler = { _, _, _, _ in try? FileManager.default.removeItem(at: dir) }
         share.popoverPresentationController?.sourceView = view
-        present(share, animated: true)
+        // outra folha ou alerta já na tela: apresenta por cima dela em vez de falhar calado
+        var top: UIViewController = self
+        while let next = top.presentedViewController, !next.isBeingDismissed { top = next }
+        top.present(share, animated: true)
     }
 
     func download(_ download: WKDownload, didFailWithError error: Error, resumeData: Data?) {
-        downloaded.removeValue(forKey: ObjectIdentifier(download))
+        if let file = downloaded.removeValue(forKey: ObjectIdentifier(download)) {
+            try? FileManager.default.removeItem(at: file.deletingLastPathComponent())
+        }
     }
 }
