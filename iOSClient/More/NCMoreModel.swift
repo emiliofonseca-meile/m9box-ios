@@ -142,6 +142,9 @@ final class NCMoreModel: ObservableObject {
         /// M9 Box: opens the CalDAV/CardDAV device-sync (.mobileconfig) setup.
         case meileSync
 
+        /// M9 Box: Conversas (Talk do Box: chat e chamada de voz e vídeo).
+        case meileTalk
+
         /// M9 Box: opens the in-app Tasks (VTODO over CalDAV).
         case meileTasks
 
@@ -293,6 +296,15 @@ final class NCMoreModel: ObservableObject {
             )
         )
 
+        // M9 Box: Conversas (Talk do Box: chat e chamada). Todo Box tem o Talk (o chat é do produto).
+        functionItems.append(
+            Item(
+                titleKey: "_meile_talk_",
+                image: "bubble.left.and.bubble.right",
+                destination: .meileTalk
+            )
+        )
+
         // M9 Box: device sync (Agenda + Contatos into the phone's native apps).
         functionItems.append(
             Item(
@@ -376,6 +388,9 @@ final class NCMoreModel: ObservableObject {
 
         case .meileSync:
             openMeileSync()
+
+        case .meileTalk:
+            openMeileTalk()
 
         case .meileTasks:
             openMeileTasks()
@@ -561,6 +576,16 @@ final class NCMoreModel: ObservableObject {
         syncController.title = NSLocalizedString("_meile_sync_", comment: "")
 
         navigationController.pushViewController(syncController, animated: true)
+    }
+
+    /// M9 Box: opens Conversas (the Box's own Talk) for the signed-in account.
+    private func openMeileTalk() {
+        guard let controller,
+              let navigationController = controller.currentNavigationController(),
+              let talk = MeileTalkViewController.make(account: controller.account) else {
+            return
+        }
+        navigationController.pushViewController(talk, animated: true)
     }
 
     /// M9 Box: opens the in-app Tasks screen for the signed-in account.

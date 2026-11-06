@@ -18,6 +18,7 @@
 		370D26AF248A3D7A00121797 /* NCCellMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370D26AE248A3D7A00121797 /* NCCellMain.swift */; };
 		4099421EEC5EA78690640DC6 /* MeileCalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CB92AF7D8C5879A01C98E3 /* MeileCalendarViewModel.swift */; };
 		46EEC2924C34D20BFC4F748F /* MeileTasksTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019F58C5BE4E061906365AD0 /* MeileTasksTab.swift */; };
+		A3FAED31604EF6F12885E2BF /* MeileTalkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CD15158EB4548EA91BC336 /* MeileTalkViewController.swift */; };
 		482F5700571DE22DDFB3A7EE /* MeileTasksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF7FBE80D02ACF374823C4E2 /* MeileTasksView.swift */; };
 		533592BAA137EBDD7B895866 /* MeileCardDav.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12C559A346071EB923DCFFA9 /* MeileCardDav.swift */; };
 		59AAE4E2226AB78ECD26831E /* MeileMultiStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 580A6198DFD692E60A1C989C /* MeileMultiStatus.swift */; };
@@ -1172,6 +1173,7 @@
 
 /* Begin PBXFileReference section */
 		019F58C5BE4E061906365AD0 /* MeileTasksTab.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileTasksTab.swift; sourceTree = "<group>"; };
+		84CD15158EB4548EA91BC336 /* MeileTalkViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileTalkViewController.swift; sourceTree = "<group>"; };
 		08C28C8E4AB0A5F4A48E6735 /* MeileVCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileVCard.swift; sourceTree = "<group>"; };
 		12C559A346071EB923DCFFA9 /* MeileCardDav.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileCardDav.swift; sourceTree = "<group>"; };
 		15AC66A6A5A8DCC2CBBC31F8 /* MeileCalendarRepository.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileCalendarRepository.swift; sourceTree = "<group>"; };
@@ -2158,12 +2160,22 @@
 			path = Calendar;
 			sourceTree = "<group>";
 		};
+		39C037E521426E56B243EE84 /* Talk */ = {
+			isa = PBXGroup;
+			children = (
+				84CD15158EB4548EA91BC336 /* MeileTalkViewController.swift */,
+			);
+			name = Talk;
+			path = Talk;
+			sourceTree = "<group>";
+		};
 		8CB5725F88FC28D66E71451D /* Meile */ = {
 			isa = PBXGroup;
 			children = (
 				8A13040653E16A9F350B55C1 /* Calendar */,
 				C4628E81ED73F99FC3F73A4C /* Sync */,
 				37EE90810B9DC5918A9D0C7C /* Tasks */,
+				39C037E521426E56B243EE84 /* Talk */,
 			);
 			name = Meile;
 			path = Meile;
@@ -5064,6 +5076,7 @@
 				33F12D75377044C9F4396687 /* MeileTasksViewModel.swift in Sources */,
 				482F5700571DE22DDFB3A7EE /* MeileTasksView.swift in Sources */,
 				46EEC2924C34D20BFC4F748F /* MeileTasksTab.swift in Sources */,
+				A3FAED31604EF6F12885E2BF /* MeileTalkViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

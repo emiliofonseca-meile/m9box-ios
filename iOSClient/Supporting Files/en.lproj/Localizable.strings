@@ -826,6 +826,7 @@ You can stop it at any time, adjust the settings, and enable it again.";
 "_meile_calendar_" = "Calendar";
 "_meile_sync_" = "Sync Calendar & Contacts";
 "_meile_tasks_" = "Tasks";
+"_meile_talk_" = "Conversations";
 "_tasks_new_" = "New task";
 "_tasks_edit_" = "Edit task";
 "_tasks_title_field_" = "Title";
