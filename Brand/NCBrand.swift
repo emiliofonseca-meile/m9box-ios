@@ -11,7 +11,7 @@ import NextcloudKit
 ///
 /// The version users see is MARKETING_VERSION in the project build settings: 1.0.N, with N + 1 on
 /// every store build. Only the owner moves it to 1.1.0.
-let upstreamVersion = "33.0.10"
+let upstreamVersion = "35.2.2"
 
 let userAgent: String = {
     // Original Nextcloud useragent "Mozilla/5.0 (iOS) Nextcloud-iOS/\(upstreamVersion)-Nextcloud"
