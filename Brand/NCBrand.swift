@@ -70,7 +70,7 @@ final class NCBrandOptions: @unchecked Sendable {
 
     var brand: String = "M9 Box"
     var brandUserAgent: String = "M9Box"
-    var textCopyrightNextcloudiOS: String = "M9 Box for iOS %@ © 2026 Meile"
+    var textCopyrightNextcloudiOS: String = "M9 Box for iOS %@ © 2026 M9 Network"
     var textCopyrightNextcloudServer: String = "Nextcloud Server %@"
     var loginBaseUrl: String = ""
     var pushNotificationServerProxy: String = ""
