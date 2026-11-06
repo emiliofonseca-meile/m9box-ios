@@ -196,7 +196,7 @@ final class MeileNativeSync {
     }
 
     private func buildEventICS(_ ev: EKEvent, uid: String) -> String {
-        var lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Meile//M9 Box//EN", "BEGIN:VEVENT",
+        var lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//M9 Box//Sync//EN", "BEGIN:VEVENT",
                      "UID:\(uid)", "DTSTAMP:\(utcStamp(Date()))"]
         if ev.isAllDay {
             lines.append("DTSTART;VALUE=DATE:\(dateStamp(ev.startDate))")

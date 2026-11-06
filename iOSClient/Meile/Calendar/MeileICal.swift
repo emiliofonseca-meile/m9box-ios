@@ -128,7 +128,7 @@ enum MeileICal {
     // MARK: Build / edit / delete
 
     static func buildICS(_ draft: MeileEventDraft, uid: String) -> String {
-        var lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Meile//M9 Box Calendar//EN", "CALSCALE:GREGORIAN"]
+        var lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//M9 Box//Calendar//EN", "CALSCALE:GREGORIAN"]
         lines += veventLines(draft, uid: uid, recurrenceId: nil)
         lines.append("END:VCALENDAR")
         return fold(lines)
@@ -331,7 +331,7 @@ enum MeileICal {
         // Preserve override VEVENTs (RECURRENCE-ID) and EXDATE lines from the
         // original resource; replace only the master VEVENT.
         let preservedExDates = firstExDateLines(existingICS)
-        var lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Meile//M9 Box Calendar//EN", "CALSCALE:GREGORIAN"]
+        var lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//M9 Box//Calendar//EN", "CALSCALE:GREGORIAN"]
         var master = veventLines(draft, uid: uid, recurrenceId: nil)
         if let endIndex = master.firstIndex(of: "END:VEVENT") {
             master.insert(contentsOf: preservedExDates, at: endIndex)
