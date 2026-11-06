@@ -72,6 +72,9 @@ extension NCMainTabBarController {
         }, openApp: { [weak self] url, fallbackUrl in
             self?.removeSidebar()
             self?.openSidebarApp(url: url, fallbackUrl: fallbackUrl)
+        }, openM9Box: { [weak self] kind in
+            self?.removeSidebar()
+            self?.openSidebarM9Box(kind)
         }, navigationBarCenterY: { [weak self] in
             self?.sidebarNavigationBarCenterY()
         }, usesExpandedPhonePortrait: { [weak self] in
@@ -233,6 +236,27 @@ extension NCMainTabBarController {
         hostingController.navigationItem.rightBarButtonItem?.accessibilityLabel = NSLocalizedString("_close_", comment: "")
         navigationController.modalPresentationStyle = .pageSheet
         present(navigationController, animated: true)
+    }
+
+    /// M9 Box: Conversas (Talk), Tasks and device sync, pushed on the visible navigation stack.
+    private func openSidebarM9Box(_ kind: String) {
+        guard let navigationController = currentNavigationController() else { return }
+        switch kind {
+        case "talk":
+            if let talk = MeileTalkViewController.make(account: account) {
+                navigationController.pushViewController(talk, animated: true)
+            }
+        case "tasks":
+            if let tasks = MeileTasksTab.makeViewController(account: account) {
+                navigationController.pushViewController(tasks, animated: true)
+            }
+        case "sync":
+            let sync = UIHostingController(rootView: MeileSyncSetupView(account: account))
+            sync.title = NSLocalizedString("_meile_sync_", comment: "")
+            navigationController.pushViewController(sync, animated: true)
+        default:
+            break
+        }
     }
 
     private func openSidebarScannedImages() {

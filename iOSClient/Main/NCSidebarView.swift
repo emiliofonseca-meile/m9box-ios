@@ -28,6 +28,8 @@ struct NCSidebarView: View {
     let openScannedImages: () -> Void
     let openExternalSite: (String, String, Int) -> Void
     let openApp: (String, String?) -> Void
+    /// M9 Box: opens one of the M9 Box screens ("talk", "tasks", "sync").
+    var openM9Box: (String) -> Void = { _ in }
     var navigationBarCenterY: () -> CGFloat? = { nil }
     var usesExpandedPhonePortrait: () -> Bool = { false }
     var windowSafeAreaLeadingInset: () -> CGFloat = { 0 }
@@ -261,6 +263,12 @@ struct NCSidebarView: View {
                                 .accessibilityIdentifier("sidebarAutoUpload")
                             sidebarItem("_scanned_images_", systemImage: "doc.text.viewfinder", isSelected: false, action: openScannedImages)
                                 .accessibilityIdentifier("sidebarScannedImages")
+                            sidebarItem("_meile_talk_", systemImage: "bubble.left.and.bubble.right", isSelected: false) { openM9Box("talk") }
+                                .accessibilityIdentifier("sidebarM9BoxTalk")
+                            sidebarItem("_meile_tasks_", systemImage: "checklist", isSelected: false) { openM9Box("tasks") }
+                                .accessibilityIdentifier("sidebarM9BoxTasks")
+                            sidebarItem("_meile_sync_", systemImage: "arrow.triangle.2.circlepath", isSelected: false) { openM9Box("sync") }
+                                .accessibilityIdentifier("sidebarM9BoxSync")
                             if !externalSites.isEmpty {
                                 Text("_external_sites_")
                                     .font(.subheadline.weight(.semibold))
