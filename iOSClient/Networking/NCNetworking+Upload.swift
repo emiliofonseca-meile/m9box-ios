@@ -255,6 +255,9 @@ extension NCNetworking {
                        ownerId: String? = nil,
                        permissions: String? = nil) async {
         nkLog(success: "Uploaded file: " + metadata.serverUrlFileName)
+#if !EXTENSION
+        M9Analytics.upload(auto: metadata.sessionSelector == NCGlobal.shared.selectorUploadAutoUpload)
+#endif
 
         metadata.uploadDate = (date as? NSDate) ?? NSDate()
         metadata.etag = etag ?? ""

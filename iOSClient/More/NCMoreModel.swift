@@ -372,27 +372,35 @@ final class NCMoreModel: ObservableObject {
     func perform(_ destination: Destination) {
         switch destination {
         case let .storyboard(name, presentation, configure):
+            M9Analytics.menu(name.lowercased())
             openStoryboard(name: name, presentation: presentation, configure: configure)
 
         case let .browser(url, title):
+            M9Analytics.menu("browser")
             openBrowser(url: url, title: title)
 
         case let .openApp(schemeUrl, fallbackUrl):
+            M9Analytics.menu("open_app")
             openApp(schemeUrl: schemeUrl, fallbackUrl: fallbackUrl)
 
         case let .openUrl(url):
+            M9Analytics.menu("open_url")
             openUrl(url)
 
         case .settings:
+            M9Analytics.menu("settings")
             openSettings()
 
         case .meileSync:
+            M9Analytics.menu("meile_sync")
             openMeileSync()
 
         case .meileTalk:
+            M9Analytics.menu("meile_talk")
             openMeileTalk()
 
         case .meileTasks:
+            M9Analytics.menu("meile_tasks")
             openMeileTasks()
 
         case .none:

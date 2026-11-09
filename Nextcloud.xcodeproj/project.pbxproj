@@ -27,6 +27,7 @@
 		70EDC97DF483EBA7D137A1CF /* MeileCalendarRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15AC66A6A5A8DCC2CBBC31F8 /* MeileCalendarRepository.swift */; };
 		7D2ED71502176BAB3AB49A4C /* MeileCalendarTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512FBF3F8030E929C943B75F /* MeileCalendarTab.swift */; };
 		8A0852A6B8C9EA8E5648AF99 /* MeileTasksRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47F22A3441816EE42229A8A /* MeileTasksRepository.swift */; };
+		A9B0C0DE0000000000000004 /* M9Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B0C0DE0000000000000003 /* M9Analytics.swift */; };
 		A5A87F9E4B0E4441A6A4BC20 /* NCContextMenuProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB7697C94BA14450A0867940 /* NCContextMenuProfile.swift */; };
 		AA3C85E82D36B08C00F74F12 /* UITestBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3C85E72D36B08C00F74F12 /* UITestBackend.swift */; };
 		AA3C85EB2D36BBFB00F74F12 /* OCSResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3C85EA2D36BBF400F74F12 /* OCSResponse.swift */; };
@@ -240,6 +241,7 @@
 		F70898692EDDB51700EF85BD /* NCSelectOpen+SelectDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F70898682EDDB51200EF85BD /* NCSelectOpen+SelectDelegate.swift */; };
 		F70968A424212C4E00ED60E5 /* NCLivePhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = F70968A324212C4E00ED60E5 /* NCLivePhoto.swift */; };
 		F70B86752642CE3B00ED5349 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = F70B86742642CE3B00ED5349 /* FirebaseCrashlytics */; };
+		A9B0C0DE0000000000000002 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = A9B0C0DE0000000000000001 /* FirebaseAnalytics */; };
 		F70BFC7420E0FA7D00C67599 /* NCUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = F70BFC7320E0FA7C00C67599 /* NCUtility.swift */; };
 		F70BFC7520E0FA7D00C67599 /* NCUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = F70BFC7320E0FA7C00C67599 /* NCUtility.swift */; };
 		F70CAE3A1F8CF31A008125FD /* NCEndToEndEncryption.m in Sources */ = {isa = PBXBuildFile; fileRef = F70CAE391F8CF31A008125FD /* NCEndToEndEncryption.m */; };
@@ -1322,6 +1324,7 @@
 		CF7FBE80D02ACF374823C4E2 /* MeileTasksView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileTasksView.swift; sourceTree = "<group>"; };
 		D1F8A93265B271609D3F36BE /* MeileEventEditorView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileEventEditorView.swift; sourceTree = "<group>"; };
 		D47F22A3441816EE42229A8A /* MeileTasksRepository.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileTasksRepository.swift; sourceTree = "<group>"; };
+		A9B0C0DE0000000000000003 /* M9Analytics.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = M9Analytics.swift; sourceTree = "<group>"; };
 		D5B6AA7727200C7200D49C24 /* NCActivityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NCActivityTableViewCell.swift; sourceTree = "<group>"; };
 		F310B1EE2BA862F1001C42F5 /* NCViewerMedia+VisionKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NCViewerMedia+VisionKit.swift"; sourceTree = "<group>"; };
 		F31165012F9674A1009A1E37 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
@@ -2071,6 +2074,7 @@
 				F3374AF22D78B01B002A38F9 /* Collections in Frameworks */,
 				F72AD70D28C24B93006CB92D /* NextcloudKit in Frameworks */,
 				F70B86752642CE3B00ED5349 /* FirebaseCrashlytics in Frameworks */,
+				A9B0C0DE0000000000000002 /* FirebaseAnalytics in Frameworks */,
 				F7A1050E29E587AF00FFD92B /* TagListView in Frameworks */,
 				F76DA969277B77EA0082465B /* DropDown in Frameworks */,
 				F7F623B52A5EF4D30022D3D4 /* Gzip in Frameworks */,
@@ -2176,6 +2180,7 @@
 				C4628E81ED73F99FC3F73A4C /* Sync */,
 				37EE90810B9DC5918A9D0C7C /* Tasks */,
 				39C037E521426E56B243EE84 /* Talk */,
+				A9B0C0DE0000000000000003 /* M9Analytics.swift */,
 			);
 			name = Meile;
 			path = Meile;
@@ -3829,6 +3834,7 @@
 				F72DA9B325F53E4E00B87DB1 /* SwiftRichString */,
 				F788ECC6263AAAFA00ADC67F /* MarkdownKit */,
 				F70B86742642CE3B00ED5349 /* FirebaseCrashlytics */,
+				A9B0C0DE0000000000000001 /* FirebaseAnalytics */,
 				F76DA962277B760E0082465B /* Queuer */,
 				F76DA968277B77EA0082465B /* DropDown */,
 				F7BB7E4627A18C56009B9F29 /* Parchment */,
@@ -5073,6 +5079,7 @@
 				00906CDD64C5DDB14CA3AC7D /* MeileNativeSync.swift in Sources */,
 				C59DD51406908213DEEE9FBE /* MeileVTodo.swift in Sources */,
 				8A0852A6B8C9EA8E5648AF99 /* MeileTasksRepository.swift in Sources */,
+				A9B0C0DE0000000000000004 /* M9Analytics.swift in Sources */,
 				33F12D75377044C9F4396687 /* MeileTasksViewModel.swift in Sources */,
 				482F5700571DE22DDFB3A7EE /* MeileTasksView.swift in Sources */,
 				46EEC2924C34D20BFC4F748F /* MeileTasksTab.swift in Sources */,
@@ -5956,7 +5963,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Brand/iOSClient.plist";
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = network.m9.box;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -5978,7 +5985,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Brand/iOSClient.plist";
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = network.m9.box;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -6774,6 +6781,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = F70B86732642CE3B00ED5349 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCrashlytics;
+		};
+		A9B0C0DE0000000000000001 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F70B86732642CE3B00ED5349 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
 		};
 		F710FC7F277B7D2700AA9FBF /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;

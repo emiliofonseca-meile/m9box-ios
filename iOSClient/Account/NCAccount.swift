@@ -119,6 +119,7 @@ class NCAccount: NSObject {
             } else {
                 NotificationCenter.default.postOnMainThread(name: self.global.notificationCenterChangeUser, userInfo: ["account": account])
             }
+            await M9Analytics.identify()
         }
     }
 
