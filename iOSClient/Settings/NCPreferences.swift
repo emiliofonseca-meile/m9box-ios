@@ -528,9 +528,6 @@ final class NCPreferences: NSObject {
         setPushNotificationSubscribingPublicKey(account: account, publicKey: nil)
         setPushNotificationDeviceIdentifier(account: account, deviceIdentifier: nil)
         setPushNotificationDeviceIdentifierSignature(account: account, deviceIdentifierSignature: nil)
-        setPushNotificationSubscribingPublicKey(account: account + "#voip", publicKey: nil)
-        setPushNotificationDeviceIdentifier(account: account + "#voip", deviceIdentifier: nil)
-        setPushNotificationDeviceIdentifierSignature(account: account + "#voip", deviceIdentifierSignature: nil)
     }
 
     // MARK: - Certificates
