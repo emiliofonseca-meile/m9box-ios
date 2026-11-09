@@ -203,7 +203,7 @@ struct NCAccountSettingsView: View {
                         })
                         .sheet(isPresented: $showPushCertificate) {
                             Group {
-                                if let url = URL(string: NCBrandOptions.shared.pushNotificationServerProxy),
+                                if let url = URL(string: NCPushNotification.shared.proxyURL(urlBase: model.tblAccount?.urlBase ?? "")),
                                     let host = url.host {
                                     let privateKeyString: String = {
                                         if let account = model.tblAccount?.account,

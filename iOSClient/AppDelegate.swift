@@ -84,6 +84,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             self.notificationSettings = settings
         }
         application.registerForRemoteNotifications()
+        MeileCallKit.shared.start()
         UNUserNotificationCenter.current().delegate = self
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { _, _ in }
 
@@ -266,8 +267,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func trustCertificateError(host: String) {
         guard let activeTblAccount = NCManageDatabase.shared.getActiveTableAccount(),
               let currentHost = URL(string: activeTblAccount.urlBase)?.host,
-              let pushNotificationServerProxyHost = URL(string: NCBrandOptions.shared.pushNotificationServerProxy)?.host,
-              host != pushNotificationServerProxyHost,
               host == currentHost
         else { return }
         let certificateHostSavedPath = NCUtilityFileSystem().directoryCertificates + "/" + host + ".der"
