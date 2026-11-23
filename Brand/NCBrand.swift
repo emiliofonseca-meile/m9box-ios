@@ -76,7 +76,7 @@ final class NCBrandOptions: @unchecked Sendable {
     var linkLoginHost: String = ""
     var linkloginPreferredProviders: String = ""
     var webLoginAutenticationProtocol: String = "m9box://"                                     // example "abc://"
-    var privacy: String = ""
+    var privacy: String = "https://www.m9.network/politica-de-privacidade.html"
     var sourceCode: String = "https://github.com/emiliofonseca-meile/m9box-ios"
     var mobileconfig: String = "/remote.php/dav/provisioning/apple-provisioning.mobileconfig"
     var appStoreUrl: String = ""
