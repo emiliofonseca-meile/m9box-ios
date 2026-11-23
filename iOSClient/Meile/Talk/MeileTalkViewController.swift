@@ -25,6 +25,7 @@ import WebKit
 
 final class MeileTalkViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKDownloadDelegate {
 
+    private let account: String
     private let baseURL: URL
     private let authHeader: String
     private let startURL: URL
@@ -36,13 +37,14 @@ final class MeileTalkViewController: UIViewController, WKNavigationDelegate, WKU
         // link de fora do Box nunca recebe a credencial: cai na tela inicial das Conversas
         let home = creds.baseURL.appendingPathComponent("index.php/apps/spreed/")
         let start = url.flatMap { sameOrigin($0, creds.baseURL) ? $0 : nil } ?? home
-        let controller = MeileTalkViewController(baseURL: creds.baseURL, authHeader: creds.authHeader, startURL: start)
+        let controller = MeileTalkViewController(account: account, baseURL: creds.baseURL, authHeader: creds.authHeader, startURL: start)
         controller.title = NSLocalizedString("_meile_talk_", comment: "")
         controller.hidesBottomBarWhenPushed = true
         return controller
     }
 
-    private init(baseURL: URL, authHeader: String, startURL: URL) {
+    private init(account: String, baseURL: URL, authHeader: String, startURL: URL) {
+        self.account = account
         self.baseURL = baseURL
         self.authHeader = authHeader
         self.startURL = startURL
@@ -65,7 +67,7 @@ final class MeileTalkViewController: UIViewController, WKNavigationDelegate, WKU
     private func isBox(_ url: URL) -> Bool { Self.sameOrigin(url, baseURL) }
 
     private var origin: String {
-        var value = "\(baseURL.scheme ?? "https")://\(baseURL.host ?? "")"
+        var value = "\(baseURL.scheme?.lowercased() ?? "https")://\(baseURL.host?.lowercased() ?? "")"
         if let port = baseURL.port { value += ":\(port)" }
         return value
     }
@@ -81,7 +83,7 @@ final class MeileTalkViewController: UIViewController, WKNavigationDelegate, WKU
         // o motor é o WebKit do Safari, então ele se apresenta como Safari.
         config.applicationNameForUserAgent = "Version/26.0 Mobile/15E148 Safari/604.1"
         config.userContentController.addUserScript(
-            WKUserScript(source: authScript(), injectionTime: .atDocumentStart, forMainFrameOnly: false)
+            WKUserScript(source: authScript() + "\n" + pageScript(), injectionTime: .atDocumentStart, forMainFrameOnly: false)
         )
 
         webView = WKWebView(frame: .zero, configuration: config)
@@ -167,6 +169,126 @@ final class MeileTalkViewController: UIViewController, WKNavigationDelegate, WKU
         """
     }
 
+    // Mesmo texto do app Android (PAGE_STYLE e WAIT_SOUND_FIX), só na origem do Box:
+    // - sem o cabeçalho do Nextcloud (a tela fica só com o Talk) e com o painel de conversas opaco;
+    // - o Talk toca o "chamando" (LibremPhoneCall) logo depois do som de saída (leave_call) quando a
+    //   outra pessoa sai: esse toque fica mudo até o Talk pará-lo; o "chamando" de quem liga segue.
+    private func pageScript() -> String {
+        let allowed = String(data: (try? JSONEncoder().encode(origin)) ?? Data("\"\"".utf8), encoding: .utf8) ?? "\"\""
+        return """
+        (() => {
+          if (window.__m9style || location.origin !== \(allowed)) return; window.__m9style = true;
+          const css = `#header:not(.header-guest) { display: none !important; }
+          :root, body { --header-height: 0px !important; --color-main-background-blur: var(--color-main-background) !important; }
+          @media (max-width: 640px) {
+            .bottom-bar { overflow: visible !important; }
+            .bottom-bar > * { flex-shrink: 0; }
+            .bottom-bar > .bottom-bar-call-controls:not(:has(.leave-call)):has(> :nth-child(3)) {
+              flex-shrink: 1; min-width: 0; overflow-x: auto; scrollbar-width: none;
+            }
+            .bottom-bar > .bottom-bar-call-controls::-webkit-scrollbar { display: none; }
+          }`;
+          const add = () => {
+            const s = document.createElement("style");
+            s.textContent = css;
+            (document.head || document.documentElement).appendChild(s);
+          };
+          if (document.documentElement) add(); else document.addEventListener("DOMContentLoaded", add);
+        })();
+        (() => {
+          if (window.__m9wait || location.origin !== \(allowed)) return; window.__m9wait = true;
+          const P = HTMLMediaElement.prototype, play = P.play, pause = P.pause;
+          const src = a => a.src || a.currentSrc || "";
+          let lastLeave = -Infinity, mute = false;
+          P.play = function () {
+            if (/\\/leave_call\\./.test(src(this))) lastLeave = Date.now();
+            if (/\\/LibremPhoneCall\\./.test(src(this))) {
+              if (!mute && Date.now() - lastLeave < 1000) mute = true;
+              if (mute) return Promise.resolve();
+            }
+            return play.apply(this, arguments);
+          };
+          P.pause = function () {
+            if (/\\/LibremPhoneCall\\./.test(src(this))) mute = false;
+            return pause.apply(this, arguments);
+          };
+        })();
+        """
+    }
+
+    // MARK: - Só o Talk fica na tela
+
+    private static let callPath = try! NSRegularExpression(pattern: "/call/[A-Za-z0-9]+")
+    private static let fileLink = try! NSRegularExpression(pattern: "(?:/index\\.php)?/f/([0-9]+)$")
+    private static let filesAppId = try! NSRegularExpression(pattern: "/apps/files/files/([0-9]+)")
+
+    private static func firstGroup(_ re: NSRegularExpression, _ text: String) -> String?? {
+        let range = NSRange(text.startIndex..., in: text)
+        guard let m = re.firstMatch(in: text, range: range) else { return nil }
+        guard m.numberOfRanges > 1, let r = Range(m.range(at: 1), in: text) else { return .some(nil) }
+        return .some(String(text[r]))
+    }
+
+    private static func isTalk(_ url: URL) -> Bool {
+        let path = url.path
+        return path.contains("/apps/spreed") || callPath.firstMatch(in: path, range: NSRange(path.startIndex..., in: path)) != nil
+    }
+
+    /// Link de arquivo do Box: `.some(id)` (/f/<id> ou /apps/files/files/<id>), `.some(nil)` para a
+    /// pasta ou o app Arquivos sem id, `nil` se não for arquivo.
+    private static func fileTarget(_ url: URL) -> String?? {
+        let path = url.path
+        if let id = firstGroup(fileLink, path), let id { return .some(id) }
+        guard path.contains("/apps/files") else { return nil }
+        if let id = firstGroup(filesAppId, path), let id { return .some(id) }
+        let q = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems?.first { $0.name == "fileid" }?.value
+        if let q, !q.isEmpty, q.allSatisfy(\.isNumber) { return .some(q) }
+        return .some(nil)
+    }
+
+    /// "Sair" do Nextcloud = sair da conta do app (a saída web daria "CSRF check failed"): mesma
+    /// confirmação de "Remover conta local" das configurações da conta.
+    private func confirmLogout() {
+        let tab = tabBarController as? NCMainTabBarController
+        let account = self.account
+        let alert = UIAlertController(title: NSLocalizedString("_want_delete_account_", comment: ""), message: nil, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("_remove_local_account_", comment: ""), style: .destructive) { [weak self, weak tab] _ in
+            Task { @MainActor in
+                self?.navigationController?.popToRootViewController(animated: false)
+                await NCAccount().deleteAccount(account)
+                await NCAccount().showNextAccountOrLogin(controller: tab)
+            }
+        })
+        alert.addAction(UIAlertAction(title: NSLocalizedString("_cancel_", comment: ""), style: .cancel))
+        present(alert, animated: true)
+    }
+
+    /// Página do Box que não é o Talk: Sair vira sair da conta, arquivo abre na tela nativa, o resto
+    /// vai pro Safari.
+    private func leaveTalk(_ url: URL) {
+        if url.path.hasSuffix("/logout") {
+            confirmLogout()
+        } else if let target = Self.fileTarget(url) {
+            openNativeFile(target)
+        } else if url.scheme == "http" || url.scheme == "https" {
+            UIApplication.shared.open(url)
+        }
+    }
+
+    private func openNativeFile(_ id: String?) {
+        guard let tab = tabBarController as? NCMainTabBarController else { return }
+        if let id {
+            // empilha o visualizador do app; a chamada em andamento fica na tela de baixo
+            Task { @MainActor in
+                await NCNetworking.shared.viewerFile(account: account, fileId: id, viewController: self)
+            }
+        } else {
+            // pasta ou app Arquivos sem id: fecha as Conversas e leva à aba Arquivos
+            navigationController?.popToRootViewController(animated: true)
+            tab.selectedIndex = ControllerConstants.filesIndex
+        }
+    }
+
     // MARK: - WKNavigationDelegate
 
     // dentro do Box, toda página leva a credencial; link para fora vai pro Safari
@@ -197,6 +319,15 @@ final class MeileTalkViewController: UIViewController, WKNavigationDelegate, WKU
             decisionHandler(.allow)
             return
         }
+        // Fica na tela só o Talk. Subframe e redirect do servidor (o pedido já leva a credencial, pois
+        // vem de um load nosso) seguem como antes; o resto do Box sai daqui.
+        if mainFrame, !Self.isTalk(url) {
+            if url.path.hasSuffix("/logout") || navigationAction.request.value(forHTTPHeaderField: "Authorization") == nil {
+                decisionHandler(.cancel)
+                leaveTalk(url)
+                return
+            }
+        }
         if mainFrame, navigationAction.request.httpMethod == "GET",
            navigationAction.request.value(forHTTPHeaderField: "Authorization") == nil {
             decisionHandler(.cancel)
@@ -208,14 +339,14 @@ final class MeileTalkViewController: UIViewController, WKNavigationDelegate, WKU
 
     // MARK: - WKUIDelegate
 
-    // link que abriria outra janela: no Box fica aqui, fora vai pro Safari
+    // link que abriria outra janela: Talk do Box fica aqui, resto do Box segue a regra do Talk, fora vai pro Safari
     func webView(_ webView: WKWebView,
                  createWebViewWith configuration: WKWebViewConfiguration,
                  for navigationAction: WKNavigationAction,
                  windowFeatures: WKWindowFeatures) -> WKWebView? {
         if let url = navigationAction.request.url {
             if isBox(url) {
-                load(url)
+                if Self.isTalk(url) { load(url) } else { leaveTalk(url) }
             } else if url.scheme == "http" || url.scheme == "https" {
                 UIApplication.shared.open(url)
             }

@@ -220,12 +220,15 @@ class NCAccount: NSObject {
             nkLog(debug: "Set Remote Wipe Completition error code: \(resultsSetWipe.error.errorCode)")
         }
 
+        await showNextAccountOrLogin(controller: controller)
+    }
+
+    /// Depois de remover uma conta: troca para a primeira que sobrou ou abre o login.
+    func showNextAccountOrLogin(controller: NCMainTabBarController?) async {
         let accounts = await NCManageDatabase.shared.getAccountsAsync()
 
-        if let accounts,
-           account.count > 0,
-           let account = accounts.first {
-                await changeAccount(account, userProfile: nil, controller: controller)
+        if let account = accounts?.first, account.count > 0 {
+            await changeAccount(account, userProfile: nil, controller: controller)
         } else {
             if NCBrandOptions.shared.disable_intro {
                 if let viewController = UIStoryboard(name: "NCLogin", bundle: nil).instantiateViewController(withIdentifier: "NCLogin") as? NCLogin {
