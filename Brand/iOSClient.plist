@@ -133,7 +133,6 @@
 		<string>processing</string>
 		<string>remote-notification</string>
 		<string>voip</string>
-		<string>location</string>
 	</array>
 	<key>UIFileSharingEnabled</key>
 	<true/>

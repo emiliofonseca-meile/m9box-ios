@@ -8,6 +8,12 @@ import NextcloudKit
 class NCBackgroundLocationUploadManager: NSObject, CLLocationManagerDelegate {
     static let shared = NCBackgroundLocationUploadManager()
 
+    /// M9 Box: the build drops the "location" background mode, and setting allowsBackgroundLocationUpdates
+    /// without it raises an exception. The auto upload screen hides the toggle when this is false.
+    static var isAvailable: Bool {
+        (Bundle.main.object(forInfoDictionaryKey: "UIBackgroundModes") as? [String])?.contains("location") == true
+    }
+
     private let global = NCGlobal.shared
     private let database = NCManageDatabase.shared
     private let locationManager = CLLocationManager()
@@ -20,7 +26,7 @@ class NCBackgroundLocationUploadManager: NSObject, CLLocationManagerDelegate {
 
         locationManager.delegate = self
         locationManager.activityType = .fitness
-        locationManager.allowsBackgroundLocationUpdates = true
+        locationManager.allowsBackgroundLocationUpdates = Self.isAvailable
     }
 
     func start() {

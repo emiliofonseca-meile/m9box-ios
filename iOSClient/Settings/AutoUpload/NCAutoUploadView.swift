@@ -277,6 +277,7 @@ struct NCAutoUploadView: View {
                 })
 
                 // Location
+                if NCBackgroundLocationUploadManager.isAvailable {
                 Section(content: {
                     Toggle(NSLocalizedString("_enable_background_location_title_", comment: ""), isOn: $model.locationAutoUploadPermissionGranted)
                         .font(.body)
@@ -289,6 +290,7 @@ struct NCAutoUploadView: View {
                     Text(NSLocalizedString("_enable_background_location_footer_", comment: ""))
                         .font(.footnote)
                 })
+                }
             }
             .disabled(model.autoUploadStart)
         }
