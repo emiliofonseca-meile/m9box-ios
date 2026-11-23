@@ -33,7 +33,7 @@
         		<true/>
     		</dict>
 		<key>NSExtensionFileProviderDocumentGroup</key>
-		<string>group.it.twsweb.Crypto-Cloud</string>
+		<string>group.com.m9network.m9box</string>
 		<key>NSExtensionFileProviderSupportsEnumeration</key>
 		<true/>
 		<key>NSExtensionFileProviderSupportsPickingFolders</key>

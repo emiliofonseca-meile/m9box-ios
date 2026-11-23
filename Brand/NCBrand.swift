@@ -69,8 +69,8 @@ final class NCBrandOptions: @unchecked Sendable {
 
     var brand: String = "M9 Box"
     var brandUserAgent: String = "M9Box"
-    var textCopyrightNextcloudiOS: String = "M9 Box for iOS %@ © 2026 Meile"
-    var textCopyrightNextcloudServer: String = "Nextcloud Server %@"
+    var textCopyrightNextcloudiOS: String = "M9 Box for iOS %@ © 2026 M9 Network"
+    var textCopyrightNextcloudServer: String = "Server %@"
     var loginBaseUrl: String = ""
     var pushNotificationServerProxy: String = ""
     var linkLoginHost: String = ""
@@ -85,8 +85,8 @@ final class NCBrandOptions: @unchecked Sendable {
     var folderDefaultAutoUpload: String = "Photos"
 
     // Capabilities Group
-    var capabilitiesGroup: String = "group.network.m9.box"
-    var capabilitiesGroupApps: String = "group.network.m9.box.apps"
+    var capabilitiesGroup: String = "group.com.m9network.m9box"
+    var capabilitiesGroupApps: String = "group.com.m9network.m9box.apps"
 
     // BRAND ONLY
     var use_AppConfig: Bool = false                                                         // Don't touch me !!

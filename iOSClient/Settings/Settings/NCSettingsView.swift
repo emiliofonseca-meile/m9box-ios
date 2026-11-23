@@ -219,6 +219,7 @@ struct NCSettingsView: View {
                     NCAcknowledgementsView(browserTitle: NSLocalizedString("_acknowledgements_", comment: ""))
                 }
                 // Terms & Privacy Conditions
+                if !NCBrandOptions.shared.privacy.isEmpty, let privacyURL = URL(string: NCBrandOptions.shared.privacy) {
                 Button(action: {
                     showBrowser.toggle()
                 }, label: {
@@ -234,7 +235,8 @@ struct NCSettingsView: View {
                 })
                 .tint(Color(NCBrandColor.shared.textColor))
                 .sheet(isPresented: $showBrowser) {
-                    NCBrowserWebView(urlBase: URL(string: NCBrandOptions.shared.privacy)!, browserTitle: NSLocalizedString("_privacy_legal_", comment: ""))
+                    NCBrowserWebView(urlBase: privacyURL, browserTitle: NSLocalizedString("_privacy_legal_", comment: ""))
+                }
                 }
                 // Source Code Nextcloud App
                 if !NCBrandOptions.shared.disable_source_code_in_settings {

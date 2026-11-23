@@ -25,7 +25,7 @@ enum MeileMobileConfig {
     /// Build the .mobileconfig XML for the given account. Returns UTF-8 data ready
     /// to write to a `.mobileconfig` file.
     static func build(_ input: Input) -> Data {
-        let root = "network.m9.box.sync.\(input.host)"
+        let root = "com.m9network.m9box.sync.\(input.host)"
         let principal = "/remote.php/dav/principals/users/\(input.userId)/"
 
         let caldav = accountPayload(

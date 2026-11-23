@@ -33,7 +33,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>network.m9.box</string>
+			<string>com.m9network.m9box</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>m9box</string>
@@ -52,8 +52,6 @@
 	<false/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<true/>
-	<key>ITSEncryptionExportComplianceCode</key>
-	<string>8e9f9874-938e-460b-a9be-f82cb3393971</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>nextcloudtalk</string>
