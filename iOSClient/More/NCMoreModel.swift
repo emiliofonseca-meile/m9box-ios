@@ -175,6 +175,11 @@ final class NCMoreModel: ObservableObject {
     ///
     /// The resulting sections are published through `sections` and rendered by `NCMoreView`.
     func loadItems() async {
+        // M9 Box: right after the first login the capabilities may still be loading. Without them the
+        // guard below returns and the menu stays empty until the user leaves and comes back, so wait up to 10 s.
+        for _ in 0..<20 where NCNetworking.shared.capabilities[account] == nil {
+            try? await Task.sleep(for: .milliseconds(500))
+        }
         guard let tableAccount = database.getTableAccount(predicate: NSPredicate(format: "account == %@", account)),
               let capabilities = NCNetworking.shared.capabilities[tableAccount.account] else {
             return
