@@ -75,6 +75,11 @@ class NCIntroViewController: UIViewController, UICollectionViewDataSource, UICol
         buttonHost.setTitle(NSLocalizedString("_host_your_own_server", comment: ""), for: .normal)
         buttonHost.setTitleColor(textColor.withAlphaComponent(0.5), for: .normal)
 
+        // M9 Box: accounts come from the company admin, so there is no sign-up and no "host your own".
+        // With an empty link these buttons do nothing (App Review 2.1), so hide them.
+        buttonSignUp.isHidden = NCBrandOptions.shared.linkloginPreferredProviders.isEmpty
+        buttonHost.isHidden = NCBrandOptions.shared.linkLoginHost.isEmpty
+
         introCollectionView.register(UINib(nibName: "NCIntroCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "introCell")
         introCollectionView.dataSource = self
         introCollectionView.delegate = self
