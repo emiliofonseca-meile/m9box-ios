@@ -140,13 +140,13 @@ final class NCMoreModel: ObservableObject {
         case settings
 
         /// M9 Box: opens the CalDAV/CardDAV device-sync (.mobileconfig) setup.
-        case meileSync
+        case m9boxSync
 
         /// M9 Box: Conversas (Talk do Box: chat e chamada de voz e vídeo).
-        case meileTalk
+        case m9boxTalk
 
         /// M9 Box: opens the in-app Tasks (VTODO over CalDAV).
-        case meileTasks
+        case m9boxTasks
 
         /// No-op destination.
         case none
@@ -304,27 +304,27 @@ final class NCMoreModel: ObservableObject {
         // M9 Box: Conversas (Talk do Box: chat e chamada). Todo Box tem o Talk (o chat é do produto).
         functionItems.append(
             Item(
-                titleKey: "_meile_talk_",
+                titleKey: "_m9box_talk_",
                 image: "bubble.left.and.bubble.right",
-                destination: .meileTalk
+                destination: .m9boxTalk
             )
         )
 
         // M9 Box: device sync (Agenda + Contatos into the phone's native apps).
         functionItems.append(
             Item(
-                titleKey: "_meile_sync_",
+                titleKey: "_m9box_sync_",
                 image: "arrow.triangle.2.circlepath",
-                destination: .meileSync
+                destination: .m9boxSync
             )
         )
 
         // M9 Box: tasks (Nextcloud Tasks / webmail tasks), next to the Agenda/Contatos sync.
         functionItems.append(
             Item(
-                titleKey: "_meile_tasks_",
+                titleKey: "_m9box_tasks_",
                 image: "checklist",
-                destination: .meileTasks
+                destination: .m9boxTasks
             )
         )
 
@@ -396,17 +396,17 @@ final class NCMoreModel: ObservableObject {
             M9Analytics.menu("settings")
             openSettings()
 
-        case .meileSync:
-            M9Analytics.menu("meile_sync")
-            openMeileSync()
+        case .m9boxSync:
+            M9Analytics.menu("m9box_sync")
+            openM9BoxSync()
 
-        case .meileTalk:
-            M9Analytics.menu("meile_talk")
-            openMeileTalk()
+        case .m9boxTalk:
+            M9Analytics.menu("m9box_talk")
+            openM9BoxTalk()
 
-        case .meileTasks:
-            M9Analytics.menu("meile_tasks")
-            openMeileTasks()
+        case .m9boxTasks:
+            M9Analytics.menu("m9box_tasks")
+            openM9BoxTasks()
 
         case .none:
             break
@@ -578,34 +578,34 @@ final class NCMoreModel: ObservableObject {
     /// M9 Box: opens the CalDAV/CardDAV device-sync setup, which generates a
     /// .mobileconfig for the signed-in account so Agenda/Contatos land in the
     /// iPhone's native Calendar/Contacts apps.
-    private func openMeileSync() {
+    private func openM9BoxSync() {
         guard let controller,
               let navigationController = controller.currentNavigationController() else {
             return
         }
 
-        let syncView = MeileSyncSetupView(account: controller.account)
+        let syncView = M9BoxSyncSetupView(account: controller.account)
         let syncController = UIHostingController(rootView: syncView)
-        syncController.title = NSLocalizedString("_meile_sync_", comment: "")
+        syncController.title = NSLocalizedString("_m9box_sync_", comment: "")
 
         navigationController.pushViewController(syncController, animated: true)
     }
 
     /// M9 Box: opens Conversas (the Box's own Talk) for the signed-in account.
-    private func openMeileTalk() {
+    private func openM9BoxTalk() {
         guard let controller,
               let navigationController = controller.currentNavigationController(),
-              let talk = MeileTalkViewController.make(account: controller.account) else {
+              let talk = M9BoxTalkViewController.make(account: controller.account) else {
             return
         }
         navigationController.pushViewController(talk, animated: true)
     }
 
     /// M9 Box: opens the in-app Tasks screen for the signed-in account.
-    private func openMeileTasks() {
+    private func openM9BoxTasks() {
         guard let controller,
               let navigationController = controller.currentNavigationController(),
-              let tasks = MeileTasksTab.makeViewController(account: controller.account) else {
+              let tasks = M9BoxTasksTab.makeViewController(account: controller.account) else {
             return
         }
         navigationController.pushViewController(tasks, animated: true)

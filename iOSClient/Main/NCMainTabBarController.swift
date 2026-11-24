@@ -49,9 +49,9 @@ class NCMainTabBarController: UITabBarController {
 
         // M9 Box: in-app calendar DISABLED (2026-07-07). Superseded by native device
         // sync — the app installs a CalDAV/CardDAV .mobileconfig so Agenda/Contatos
-        // land in the iPhone's own Calendar/Contacts apps (see MeileSync). The
+        // land in the iPhone's own Calendar/Contacts apps (see M9BoxSync). The
         // calendar UI sources stay in the tree (still compile) but are not shown.
-        // configureMeileCalendarController()
+        // configureM9BoxCalendarController()
         configureMoreController()
         configureTabBarItems()
         configureTabBarAppearance()
@@ -115,9 +115,9 @@ class NCMainTabBarController: UITabBarController {
     }
 
     // M9 Box: native CalDAV calendar tab, inserted before "More".
-    private func configureMeileCalendarController() {
+    private func configureM9BoxCalendarController() {
         guard var controllers = viewControllers,
-              let calendar = MeileCalendarTab.makeViewController(account: account) else { return }
+              let calendar = M9BoxCalendarTab.makeViewController(account: account) else { return }
 
         controllers.append(calendar)
         viewControllers = controllers

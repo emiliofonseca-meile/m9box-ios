@@ -84,7 +84,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             self.notificationSettings = settings
         }
         application.registerForRemoteNotifications()
-        MeileCallKit.shared.start()
+        M9BoxCallKit.shared.start()
         UNUserNotificationCenter.current().delegate = self
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { _, _ in }
 

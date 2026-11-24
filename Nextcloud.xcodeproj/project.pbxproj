@@ -7,27 +7,27 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00906CDD64C5DDB14CA3AC7D /* MeileNativeSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90596CF8A44F24098471EC25 /* MeileNativeSync.swift */; };
-		0CFF0077E79A457A708C976A /* MeileCalDav.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60EAA346E3200334C5499976 /* MeileCalDav.swift */; };
+		00906CDD64C5DDB14CA3AC7D /* M9BoxNativeSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90596CF8A44F24098471EC25 /* M9BoxNativeSync.swift */; };
+		0CFF0077E79A457A708C976A /* M9BoxCalDav.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60EAA346E3200334C5499976 /* M9BoxCalDav.swift */; };
 		2C1D5D7623E2DE3300334ABB /* NCManageDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7BAADB51ED5A87C00B7EAD4 /* NCManageDatabase.swift */; };
 		2C1D5D7923E2DE9100334ABB /* NCBrand.swift in Sources */ = {isa = PBXBuildFile; fileRef = F76B3CCD1EAE01BD00921AC9 /* NCBrand.swift */; };
 		2C33C48223E2C475005F963B /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C33C48123E2C475005F963B /* NotificationService.swift */; };
 		2C33C48623E2C475005F963B /* Notification Service Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 2C33C47F23E2C475005F963B /* Notification Service Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		2F96A1BAFB10ACFEAC68EF1C /* NCContextMenuPlayerTracks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C7A5B36D1ED178FB6B76CB /* NCContextMenuPlayerTracks.swift */; };
-		33F12D75377044C9F4396687 /* MeileTasksViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73AADADDF5D0FF98A7935914 /* MeileTasksViewModel.swift */; };
+		33F12D75377044C9F4396687 /* M9BoxTasksViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73AADADDF5D0FF98A7935914 /* M9BoxTasksViewModel.swift */; };
 		370D26AF248A3D7A00121797 /* NCCellMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370D26AE248A3D7A00121797 /* NCCellMain.swift */; };
-		4099421EEC5EA78690640DC6 /* MeileCalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CB92AF7D8C5879A01C98E3 /* MeileCalendarViewModel.swift */; };
-		46EEC2924C34D20BFC4F748F /* MeileTasksTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019F58C5BE4E061906365AD0 /* MeileTasksTab.swift */; };
-		A3FAED32604EF6F12885E2C0 /* MeileCallKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CD15168EB4548EA91BC337 /* MeileCallKit.swift */; };
-		A3FAED31604EF6F12885E2BF /* MeileTalkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CD15158EB4548EA91BC336 /* MeileTalkViewController.swift */; };
-		482F5700571DE22DDFB3A7EE /* MeileTasksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF7FBE80D02ACF374823C4E2 /* MeileTasksView.swift */; };
-		533592BAA137EBDD7B895866 /* MeileCardDav.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12C559A346071EB923DCFFA9 /* MeileCardDav.swift */; };
-		59AAE4E2226AB78ECD26831E /* MeileMultiStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 580A6198DFD692E60A1C989C /* MeileMultiStatus.swift */; };
-		5A232D7AE780FAED433EB65C /* MeileCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8ACCC5FCA58DB6CCAA7D64 /* MeileCalendarView.swift */; };
-		64928CAA48593930A1E1E5B0 /* MeileICal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E47E331C082FED1F309EB4 /* MeileICal.swift */; };
-		70EDC97DF483EBA7D137A1CF /* MeileCalendarRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15AC66A6A5A8DCC2CBBC31F8 /* MeileCalendarRepository.swift */; };
-		7D2ED71502176BAB3AB49A4C /* MeileCalendarTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512FBF3F8030E929C943B75F /* MeileCalendarTab.swift */; };
-		8A0852A6B8C9EA8E5648AF99 /* MeileTasksRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47F22A3441816EE42229A8A /* MeileTasksRepository.swift */; };
+		4099421EEC5EA78690640DC6 /* M9BoxCalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85CB92AF7D8C5879A01C98E3 /* M9BoxCalendarViewModel.swift */; };
+		46EEC2924C34D20BFC4F748F /* M9BoxTasksTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019F58C5BE4E061906365AD0 /* M9BoxTasksTab.swift */; };
+		A3FAED32604EF6F12885E2C0 /* M9BoxCallKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CD15168EB4548EA91BC337 /* M9BoxCallKit.swift */; };
+		A3FAED31604EF6F12885E2BF /* M9BoxTalkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CD15158EB4548EA91BC336 /* M9BoxTalkViewController.swift */; };
+		482F5700571DE22DDFB3A7EE /* M9BoxTasksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF7FBE80D02ACF374823C4E2 /* M9BoxTasksView.swift */; };
+		533592BAA137EBDD7B895866 /* M9BoxCardDav.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12C559A346071EB923DCFFA9 /* M9BoxCardDav.swift */; };
+		59AAE4E2226AB78ECD26831E /* M9BoxMultiStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 580A6198DFD692E60A1C989C /* M9BoxMultiStatus.swift */; };
+		5A232D7AE780FAED433EB65C /* M9BoxCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8ACCC5FCA58DB6CCAA7D64 /* M9BoxCalendarView.swift */; };
+		64928CAA48593930A1E1E5B0 /* M9BoxICal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E47E331C082FED1F309EB4 /* M9BoxICal.swift */; };
+		70EDC97DF483EBA7D137A1CF /* M9BoxCalendarRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15AC66A6A5A8DCC2CBBC31F8 /* M9BoxCalendarRepository.swift */; };
+		7D2ED71502176BAB3AB49A4C /* M9BoxCalendarTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512FBF3F8030E929C943B75F /* M9BoxCalendarTab.swift */; };
+		8A0852A6B8C9EA8E5648AF99 /* M9BoxTasksRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47F22A3441816EE42229A8A /* M9BoxTasksRepository.swift */; };
 		A9B0C0DE0000000000000004 /* M9Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B0C0DE0000000000000003 /* M9Analytics.swift */; };
 		A5A87F9E4B0E4441A6A4BC20 /* NCContextMenuProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB7697C94BA14450A0867940 /* NCContextMenuProfile.swift */; };
 		AA3C85E82D36B08C00F74F12 /* UITestBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3C85E72D36B08C00F74F12 /* UITestBackend.swift */; };
@@ -105,15 +105,15 @@
 		AFCE353527E4ED5900FEA6C2 /* DateFormatter+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFCE353427E4ED5900FEA6C2 /* DateFormatter+Extension.swift */; };
 		AFCE353727E4ED7B00FEA6C2 /* NCShareCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFCE353627E4ED7B00FEA6C2 /* NCShareCells.swift */; };
 		AFCE353927E5DE0500FEA6C2 /* Shareable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFCE353827E5DE0400FEA6C2 /* Shareable.swift */; };
-		B16B5A0A54E17E532A768533 /* MeileCalModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 392CE68BA493C03711450553 /* MeileCalModels.swift */; };
-		BBB45ECB9BD061FBB211AE3B /* MeileSyncOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE7F17A4EBB3A8ECEBCA087B /* MeileSyncOnboarding.swift */; };
-		BD982DA524D799F6A2D40267 /* MeileSyncSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D19B25D0D2D991AD8FD869 /* MeileSyncSetupView.swift */; };
-		C59DD51406908213DEEE9FBE /* MeileVTodo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DAD09F22E6965E8B599EA59 /* MeileVTodo.swift */; };
+		B16B5A0A54E17E532A768533 /* M9BoxCalModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 392CE68BA493C03711450553 /* M9BoxCalModels.swift */; };
+		BBB45ECB9BD061FBB211AE3B /* M9BoxSyncOnboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE7F17A4EBB3A8ECEBCA087B /* M9BoxSyncOnboarding.swift */; };
+		BD982DA524D799F6A2D40267 /* M9BoxSyncSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D19B25D0D2D991AD8FD869 /* M9BoxSyncSetupView.swift */; };
+		C59DD51406908213DEEE9FBE /* M9BoxVTodo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DAD09F22E6965E8B599EA59 /* M9BoxVTodo.swift */; };
 		CB3666201AF7550816B5CD6A /* NCContextMenuComment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8932E90EC4278026D86CCCC9 /* NCContextMenuComment.swift */; };
-		D50C4BDE794F30A0EAAD9A95 /* MeileEventEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1F8A93265B271609D3F36BE /* MeileEventEditorView.swift */; };
-		D5A1FB90C4B8262695117851 /* MeileMobileConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3765485A86EDD652CE08A59 /* MeileMobileConfig.swift */; };
+		D50C4BDE794F30A0EAAD9A95 /* M9BoxEventEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1F8A93265B271609D3F36BE /* M9BoxEventEditorView.swift */; };
+		D5A1FB90C4B8262695117851 /* M9BoxMobileConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3765485A86EDD652CE08A59 /* M9BoxMobileConfig.swift */; };
 		D5B6AA7827200C7200D49C24 /* NCActivityTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B6AA7727200C7200D49C24 /* NCActivityTableViewCell.swift */; };
-		E875CAFC99FEBC25E7A49107 /* MeileVCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08C28C8E4AB0A5F4A48E6735 /* MeileVCard.swift */; };
+		E875CAFC99FEBC25E7A49107 /* M9BoxVCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08C28C8E4AB0A5F4A48E6735 /* M9BoxVCard.swift */; };
 		F310B1EF2BA862F1001C42F5 /* NCViewerMedia+VisionKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = F310B1EE2BA862F1001C42F5 /* NCViewerMedia+VisionKit.swift */; };
 		F31165022F9674A1009A1E37 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = F31165012F9674A1009A1E37 /* AppIcon.icon */; };
 		F317C82E2E844C5300761AEA /* ClientIntegrationUIViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F317C82D2E844C5300761AEA /* ClientIntegrationUIViewer.swift */; };
@@ -1175,28 +1175,28 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		019F58C5BE4E061906365AD0 /* MeileTasksTab.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileTasksTab.swift; sourceTree = "<group>"; };
-		84CD15168EB4548EA91BC337 /* MeileCallKit.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileCallKit.swift; sourceTree = "<group>"; };
-		84CD15158EB4548EA91BC336 /* MeileTalkViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileTalkViewController.swift; sourceTree = "<group>"; };
-		08C28C8E4AB0A5F4A48E6735 /* MeileVCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileVCard.swift; sourceTree = "<group>"; };
-		12C559A346071EB923DCFFA9 /* MeileCardDav.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileCardDav.swift; sourceTree = "<group>"; };
-		15AC66A6A5A8DCC2CBBC31F8 /* MeileCalendarRepository.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileCalendarRepository.swift; sourceTree = "<group>"; };
+		019F58C5BE4E061906365AD0 /* M9BoxTasksTab.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = M9BoxTasksTab.swift; sourceTree = "<group>"; };
+		84CD15168EB4548EA91BC337 /* M9BoxCallKit.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = M9BoxCallKit.swift; sourceTree = "<group>"; };
+		84CD15158EB4548EA91BC336 /* M9BoxTalkViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = M9BoxTalkViewController.swift; sourceTree = "<group>"; };
+		08C28C8E4AB0A5F4A48E6735 /* M9BoxVCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = M9BoxVCard.swift; sourceTree = "<group>"; };
+		12C559A346071EB923DCFFA9 /* M9BoxCardDav.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = M9BoxCardDav.swift; sourceTree = "<group>"; };
+		15AC66A6A5A8DCC2CBBC31F8 /* M9BoxCalendarRepository.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = M9BoxCalendarRepository.swift; sourceTree = "<group>"; };
 		2C33C47F23E2C475005F963B /* Notification Service Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Notification Service Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C33C48123E2C475005F963B /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		2C33C48A23E2CC26005F963B /* Notification_Service_Extension-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Notification_Service_Extension-Bridging-Header.h"; sourceTree = "<group>"; };
-		33D19B25D0D2D991AD8FD869 /* MeileSyncSetupView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileSyncSetupView.swift; sourceTree = "<group>"; };
+		33D19B25D0D2D991AD8FD869 /* M9BoxSyncSetupView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = M9BoxSyncSetupView.swift; sourceTree = "<group>"; };
 		370D26AE248A3D7A00121797 /* NCCellMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NCCellMain.swift; sourceTree = "<group>"; };
-		392CE68BA493C03711450553 /* MeileCalModels.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileCalModels.swift; sourceTree = "<group>"; };
-		3DAD09F22E6965E8B599EA59 /* MeileVTodo.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileVTodo.swift; sourceTree = "<group>"; };
-		512FBF3F8030E929C943B75F /* MeileCalendarTab.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileCalendarTab.swift; sourceTree = "<group>"; };
-		56E47E331C082FED1F309EB4 /* MeileICal.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileICal.swift; sourceTree = "<group>"; };
-		580A6198DFD692E60A1C989C /* MeileMultiStatus.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileMultiStatus.swift; sourceTree = "<group>"; };
-		5F8ACCC5FCA58DB6CCAA7D64 /* MeileCalendarView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileCalendarView.swift; sourceTree = "<group>"; };
-		60EAA346E3200334C5499976 /* MeileCalDav.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileCalDav.swift; sourceTree = "<group>"; };
-		73AADADDF5D0FF98A7935914 /* MeileTasksViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileTasksViewModel.swift; sourceTree = "<group>"; };
-		85CB92AF7D8C5879A01C98E3 /* MeileCalendarViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileCalendarViewModel.swift; sourceTree = "<group>"; };
+		392CE68BA493C03711450553 /* M9BoxCalModels.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = M9BoxCalModels.swift; sourceTree = "<group>"; };
+		3DAD09F22E6965E8B599EA59 /* M9BoxVTodo.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = M9BoxVTodo.swift; sourceTree = "<group>"; };
+		512FBF3F8030E929C943B75F /* M9BoxCalendarTab.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = M9BoxCalendarTab.swift; sourceTree = "<group>"; };
+		56E47E331C082FED1F309EB4 /* M9BoxICal.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = M9BoxICal.swift; sourceTree = "<group>"; };
+		580A6198DFD692E60A1C989C /* M9BoxMultiStatus.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = M9BoxMultiStatus.swift; sourceTree = "<group>"; };
+		5F8ACCC5FCA58DB6CCAA7D64 /* M9BoxCalendarView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = M9BoxCalendarView.swift; sourceTree = "<group>"; };
+		60EAA346E3200334C5499976 /* M9BoxCalDav.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = M9BoxCalDav.swift; sourceTree = "<group>"; };
+		73AADADDF5D0FF98A7935914 /* M9BoxTasksViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = M9BoxTasksViewModel.swift; sourceTree = "<group>"; };
+		85CB92AF7D8C5879A01C98E3 /* M9BoxCalendarViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = M9BoxCalendarViewModel.swift; sourceTree = "<group>"; };
 		8932E90EC4278026D86CCCC9 /* NCContextMenuComment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NCContextMenuComment.swift; sourceTree = "<group>"; };
-		90596CF8A44F24098471EC25 /* MeileNativeSync.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileNativeSync.swift; sourceTree = "<group>"; };
+		90596CF8A44F24098471EC25 /* M9BoxNativeSync.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = M9BoxNativeSync.swift; sourceTree = "<group>"; };
 		AA3C85E72D36B08C00F74F12 /* UITestBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestBackend.swift; sourceTree = "<group>"; };
 		AA3C85EA2D36BBF400F74F12 /* OCSResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCSResponse.swift; sourceTree = "<group>"; };
 		AA3C85ED2D36BCCB00F74F12 /* SharesResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharesResponse.swift; sourceTree = "<group>"; };
@@ -1323,9 +1323,9 @@
 		BB7697C94BA14450A0867940 /* NCContextMenuProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NCContextMenuProfile.swift; sourceTree = "<group>"; };
 		C0046CDA2A17B98400D87C9D /* NextcloudUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NextcloudUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C04E2F202A17BB4D001BAD85 /* NextcloudIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NextcloudIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		CF7FBE80D02ACF374823C4E2 /* MeileTasksView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileTasksView.swift; sourceTree = "<group>"; };
-		D1F8A93265B271609D3F36BE /* MeileEventEditorView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileEventEditorView.swift; sourceTree = "<group>"; };
-		D47F22A3441816EE42229A8A /* MeileTasksRepository.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileTasksRepository.swift; sourceTree = "<group>"; };
+		CF7FBE80D02ACF374823C4E2 /* M9BoxTasksView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = M9BoxTasksView.swift; sourceTree = "<group>"; };
+		D1F8A93265B271609D3F36BE /* M9BoxEventEditorView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = M9BoxEventEditorView.swift; sourceTree = "<group>"; };
+		D47F22A3441816EE42229A8A /* M9BoxTasksRepository.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = M9BoxTasksRepository.swift; sourceTree = "<group>"; };
 		A9B0C0DE0000000000000003 /* M9Analytics.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = M9Analytics.swift; sourceTree = "<group>"; };
 		D5B6AA7727200C7200D49C24 /* NCActivityTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NCActivityTableViewCell.swift; sourceTree = "<group>"; };
 		F310B1EE2BA862F1001C42F5 /* NCViewerMedia+VisionKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NCViewerMedia+VisionKit.swift"; sourceTree = "<group>"; };
@@ -1353,7 +1353,7 @@
 		F36E64F62B9245210085ABB5 /* NCCollectionViewCommon+SelectTabBarDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NCCollectionViewCommon+SelectTabBarDelegate.swift"; sourceTree = "<group>"; };
 		F37208742BAB4AB0006B5430 /* TestConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConstants.swift; sourceTree = "<group>"; };
 		F3754A7C2CF87D600009312E /* SetupPasscodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupPasscodeView.swift; sourceTree = "<group>"; };
-		F3765485A86EDD652CE08A59 /* MeileMobileConfig.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileMobileConfig.swift; sourceTree = "<group>"; };
+		F3765485A86EDD652CE08A59 /* M9BoxMobileConfig.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = M9BoxMobileConfig.swift; sourceTree = "<group>"; };
 		F376A3732E5CC5FF0067EE25 /* ContextMenuActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextMenuActions.swift; sourceTree = "<group>"; };
 		F389C9F42CEE383300049762 /* SelectAlbumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectAlbumView.swift; sourceTree = "<group>"; };
 		F38F71242B6BBDC300473CDC /* NCCollectionViewCommonSelectTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NCCollectionViewCommonSelectTabBar.swift; sourceTree = "<group>"; };
@@ -1925,7 +1925,7 @@
 		F7FF2CB02842159500EBB7A1 /* NCSectionHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NCSectionHeader.xib; sourceTree = "<group>"; };
 		F7FFFC9D2FB300440015441E /* NCAssistantSharedTextStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NCAssistantSharedTextStore.swift; sourceTree = "<group>"; };
 		F7FFFCA32FB3088D0015441E /* NCShareExtension+Assistant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NCShareExtension+Assistant.swift"; sourceTree = "<group>"; };
-		FE7F17A4EBB3A8ECEBCA087B /* MeileSyncOnboarding.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MeileSyncOnboarding.swift; sourceTree = "<group>"; };
+		FE7F17A4EBB3A8ECEBCA087B /* M9BoxSyncOnboarding.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = M9BoxSyncOnboarding.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -2139,11 +2139,11 @@
 		37EE90810B9DC5918A9D0C7C /* Tasks */ = {
 			isa = PBXGroup;
 			children = (
-				3DAD09F22E6965E8B599EA59 /* MeileVTodo.swift */,
-				D47F22A3441816EE42229A8A /* MeileTasksRepository.swift */,
-				73AADADDF5D0FF98A7935914 /* MeileTasksViewModel.swift */,
-				CF7FBE80D02ACF374823C4E2 /* MeileTasksView.swift */,
-				019F58C5BE4E061906365AD0 /* MeileTasksTab.swift */,
+				3DAD09F22E6965E8B599EA59 /* M9BoxVTodo.swift */,
+				D47F22A3441816EE42229A8A /* M9BoxTasksRepository.swift */,
+				73AADADDF5D0FF98A7935914 /* M9BoxTasksViewModel.swift */,
+				CF7FBE80D02ACF374823C4E2 /* M9BoxTasksView.swift */,
+				019F58C5BE4E061906365AD0 /* M9BoxTasksTab.swift */,
 			);
 			name = Tasks;
 			path = Tasks;
@@ -2152,15 +2152,15 @@
 		8A13040653E16A9F350B55C1 /* Calendar */ = {
 			isa = PBXGroup;
 			children = (
-				392CE68BA493C03711450553 /* MeileCalModels.swift */,
-				56E47E331C082FED1F309EB4 /* MeileICal.swift */,
-				60EAA346E3200334C5499976 /* MeileCalDav.swift */,
-				580A6198DFD692E60A1C989C /* MeileMultiStatus.swift */,
-				15AC66A6A5A8DCC2CBBC31F8 /* MeileCalendarRepository.swift */,
-				85CB92AF7D8C5879A01C98E3 /* MeileCalendarViewModel.swift */,
-				5F8ACCC5FCA58DB6CCAA7D64 /* MeileCalendarView.swift */,
-				D1F8A93265B271609D3F36BE /* MeileEventEditorView.swift */,
-				512FBF3F8030E929C943B75F /* MeileCalendarTab.swift */,
+				392CE68BA493C03711450553 /* M9BoxCalModels.swift */,
+				56E47E331C082FED1F309EB4 /* M9BoxICal.swift */,
+				60EAA346E3200334C5499976 /* M9BoxCalDav.swift */,
+				580A6198DFD692E60A1C989C /* M9BoxMultiStatus.swift */,
+				15AC66A6A5A8DCC2CBBC31F8 /* M9BoxCalendarRepository.swift */,
+				85CB92AF7D8C5879A01C98E3 /* M9BoxCalendarViewModel.swift */,
+				5F8ACCC5FCA58DB6CCAA7D64 /* M9BoxCalendarView.swift */,
+				D1F8A93265B271609D3F36BE /* M9BoxEventEditorView.swift */,
+				512FBF3F8030E929C943B75F /* M9BoxCalendarTab.swift */,
 			);
 			name = Calendar;
 			path = Calendar;
@@ -2169,14 +2169,14 @@
 		39C037E521426E56B243EE84 /* Talk */ = {
 			isa = PBXGroup;
 			children = (
-				84CD15158EB4548EA91BC336 /* MeileTalkViewController.swift */,
-				84CD15168EB4548EA91BC337 /* MeileCallKit.swift */,
+				84CD15158EB4548EA91BC336 /* M9BoxTalkViewController.swift */,
+				84CD15168EB4548EA91BC337 /* M9BoxCallKit.swift */,
 			);
 			name = Talk;
 			path = Talk;
 			sourceTree = "<group>";
 		};
-		8CB5725F88FC28D66E71451D /* Meile */ = {
+		8CB5725F88FC28D66E71451D /* M9Box */ = {
 			isa = PBXGroup;
 			children = (
 				8A13040653E16A9F350B55C1 /* Calendar */,
@@ -2185,8 +2185,8 @@
 				39C037E521426E56B243EE84 /* Talk */,
 				A9B0C0DE0000000000000003 /* M9Analytics.swift */,
 			);
-			name = Meile;
-			path = Meile;
+			name = M9Box;
+			path = M9Box;
 			sourceTree = "<group>";
 		};
 		AA3C85E92D36BBDE00F74F12 /* UITestBackend */ = {
@@ -2278,12 +2278,12 @@
 		C4628E81ED73F99FC3F73A4C /* Sync */ = {
 			isa = PBXGroup;
 			children = (
-				F3765485A86EDD652CE08A59 /* MeileMobileConfig.swift */,
-				33D19B25D0D2D991AD8FD869 /* MeileSyncSetupView.swift */,
-				FE7F17A4EBB3A8ECEBCA087B /* MeileSyncOnboarding.swift */,
-				12C559A346071EB923DCFFA9 /* MeileCardDav.swift */,
-				08C28C8E4AB0A5F4A48E6735 /* MeileVCard.swift */,
-				90596CF8A44F24098471EC25 /* MeileNativeSync.swift */,
+				F3765485A86EDD652CE08A59 /* M9BoxMobileConfig.swift */,
+				33D19B25D0D2D991AD8FD869 /* M9BoxSyncSetupView.swift */,
+				FE7F17A4EBB3A8ECEBCA087B /* M9BoxSyncOnboarding.swift */,
+				12C559A346071EB923DCFFA9 /* M9BoxCardDav.swift */,
+				08C28C8E4AB0A5F4A48E6735 /* M9BoxVCard.swift */,
+				90596CF8A44F24098471EC25 /* M9BoxNativeSync.swift */,
 			);
 			name = Sync;
 			path = Sync;
@@ -3525,7 +3525,7 @@
 				F78F74322163753B00C2ADAD /* Trash */,
 				F7BFFA991A24D7BB0044ED85 /* Utility */,
 				F79630EC215526B60015EEA5 /* Viewer */,
-				8CB5725F88FC28D66E71451D /* Meile */,
+				8CB5725F88FC28D66E71451D /* M9Box */,
 			);
 			path = iOSClient;
 			sourceTree = "<group>";
@@ -5065,29 +5065,29 @@
 				F7CAFE182F164B9500DB35A5 /* NCCollectionViewCommon+CellDelegate.swift in Sources */,
 				F711A4DC2AF92CAE00095DD8 /* NCUtility+Date.swift in Sources */,
 				AF4BF61E27562B3F0081CEEF /* NCManageDatabase+Activity.swift in Sources */,
-				B16B5A0A54E17E532A768533 /* MeileCalModels.swift in Sources */,
-				64928CAA48593930A1E1E5B0 /* MeileICal.swift in Sources */,
-				0CFF0077E79A457A708C976A /* MeileCalDav.swift in Sources */,
-				59AAE4E2226AB78ECD26831E /* MeileMultiStatus.swift in Sources */,
-				70EDC97DF483EBA7D137A1CF /* MeileCalendarRepository.swift in Sources */,
-				4099421EEC5EA78690640DC6 /* MeileCalendarViewModel.swift in Sources */,
-				5A232D7AE780FAED433EB65C /* MeileCalendarView.swift in Sources */,
-				D50C4BDE794F30A0EAAD9A95 /* MeileEventEditorView.swift in Sources */,
-				7D2ED71502176BAB3AB49A4C /* MeileCalendarTab.swift in Sources */,
-				D5A1FB90C4B8262695117851 /* MeileMobileConfig.swift in Sources */,
-				BD982DA524D799F6A2D40267 /* MeileSyncSetupView.swift in Sources */,
-				BBB45ECB9BD061FBB211AE3B /* MeileSyncOnboarding.swift in Sources */,
-				533592BAA137EBDD7B895866 /* MeileCardDav.swift in Sources */,
-				E875CAFC99FEBC25E7A49107 /* MeileVCard.swift in Sources */,
-				00906CDD64C5DDB14CA3AC7D /* MeileNativeSync.swift in Sources */,
-				C59DD51406908213DEEE9FBE /* MeileVTodo.swift in Sources */,
-				8A0852A6B8C9EA8E5648AF99 /* MeileTasksRepository.swift in Sources */,
+				B16B5A0A54E17E532A768533 /* M9BoxCalModels.swift in Sources */,
+				64928CAA48593930A1E1E5B0 /* M9BoxICal.swift in Sources */,
+				0CFF0077E79A457A708C976A /* M9BoxCalDav.swift in Sources */,
+				59AAE4E2226AB78ECD26831E /* M9BoxMultiStatus.swift in Sources */,
+				70EDC97DF483EBA7D137A1CF /* M9BoxCalendarRepository.swift in Sources */,
+				4099421EEC5EA78690640DC6 /* M9BoxCalendarViewModel.swift in Sources */,
+				5A232D7AE780FAED433EB65C /* M9BoxCalendarView.swift in Sources */,
+				D50C4BDE794F30A0EAAD9A95 /* M9BoxEventEditorView.swift in Sources */,
+				7D2ED71502176BAB3AB49A4C /* M9BoxCalendarTab.swift in Sources */,
+				D5A1FB90C4B8262695117851 /* M9BoxMobileConfig.swift in Sources */,
+				BD982DA524D799F6A2D40267 /* M9BoxSyncSetupView.swift in Sources */,
+				BBB45ECB9BD061FBB211AE3B /* M9BoxSyncOnboarding.swift in Sources */,
+				533592BAA137EBDD7B895866 /* M9BoxCardDav.swift in Sources */,
+				E875CAFC99FEBC25E7A49107 /* M9BoxVCard.swift in Sources */,
+				00906CDD64C5DDB14CA3AC7D /* M9BoxNativeSync.swift in Sources */,
+				C59DD51406908213DEEE9FBE /* M9BoxVTodo.swift in Sources */,
+				8A0852A6B8C9EA8E5648AF99 /* M9BoxTasksRepository.swift in Sources */,
 				A9B0C0DE0000000000000004 /* M9Analytics.swift in Sources */,
-				33F12D75377044C9F4396687 /* MeileTasksViewModel.swift in Sources */,
-				482F5700571DE22DDFB3A7EE /* MeileTasksView.swift in Sources */,
-				46EEC2924C34D20BFC4F748F /* MeileTasksTab.swift in Sources */,
-				A3FAED31604EF6F12885E2BF /* MeileTalkViewController.swift in Sources */,
-				A3FAED32604EF6F12885E2C0 /* MeileCallKit.swift in Sources */,
+				33F12D75377044C9F4396687 /* M9BoxTasksViewModel.swift in Sources */,
+				482F5700571DE22DDFB3A7EE /* M9BoxTasksView.swift in Sources */,
+				46EEC2924C34D20BFC4F748F /* M9BoxTasksTab.swift in Sources */,
+				A3FAED31604EF6F12885E2BF /* M9BoxTalkViewController.swift in Sources */,
+				A3FAED32604EF6F12885E2C0 /* M9BoxCallKit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
