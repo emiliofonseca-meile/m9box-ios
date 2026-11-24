@@ -181,14 +181,23 @@ final class M9BoxNativeSync {
     private func healLostContactMap(account: String) -> Bool {
         let doneKey = contactMapKeyPrefix + "healed_" + account
         guard !UserDefaults.standard.bool(forKey: doneKey) else { return false }
-        UserDefaults.standard.set(true, forKey: doneKey)
-        guard loadContactMap(account: account).isEmpty else { return false }
+        guard loadContactMap(account: account).isEmpty else {
+            UserDefaults.standard.set(true, forKey: doneKey)
+            return false
+        }
+        // A failed Contacts read keeps the heal for the next run and skips this push:
+        // pushing with an empty map would duplicate the whole group on the server.
         let store = CNContactStore()
-        guard let group = try? store.groups(matching: nil).first(where: { $0.name == groupName }),
-              let contacts = try? store.unifiedContacts(
-                matching: CNContact.predicateForContactsInGroup(withIdentifier: group.identifier),
-                keysToFetch: [CNContactVCardSerialization.descriptorForRequiredKeys()]),
-              !contacts.isEmpty else { return false }
+        guard let groups = try? store.groups(matching: nil) else { return true }
+        guard let group = groups.first(where: { $0.name == groupName }) else {
+            UserDefaults.standard.set(true, forKey: doneKey)
+            return false
+        }
+        guard let contacts = try? store.unifiedContacts(
+            matching: CNContact.predicateForContactsInGroup(withIdentifier: group.identifier),
+            keysToFetch: [CNContactVCardSerialization.descriptorForRequiredKeys()]) else { return true }
+        UserDefaults.standard.set(true, forKey: doneKey)
+        guard !contacts.isEmpty else { return false }
         let save = CNSaveRequest()
         contacts.forEach { save.delete($0.mutableCopy() as! CNMutableContact) }
         try? store.execute(save)
