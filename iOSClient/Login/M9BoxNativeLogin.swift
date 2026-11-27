@@ -256,7 +256,7 @@ final class M9BoxLoginForm: UIScrollView, UITextFieldDelegate {
         field.rightView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: 44))
         field.rightViewMode = .always
         let text = m9boxLocalized(placeholder)
-        field.attributedPlaceholder = NSAttributedString(string: text, attributes: [.foregroundColor: textColor.withAlphaComponent(0.5)])
+        field.attributedPlaceholder = NSAttributedString(string: text, attributes: [.foregroundColor: textColor.withAlphaComponent(0.85)])
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.spellCheckingType = .no
