@@ -25,6 +25,7 @@ enum M9BoxLoginError: Equatable {
     case tooManyAttempts
     case offline
     case useBrowser
+    case generic
 
     /// Key in Localizable.strings.
     var key: String {
@@ -37,6 +38,7 @@ enum M9BoxLoginError: Equatable {
         case .tooManyAttempts: return "_m9box_login_err_toomany_"
         case .offline: return "_m9box_login_err_offline_"
         case .useBrowser: return "_m9box_login_err_other_"
+        case .generic: return "_m9box_login_err_generic_"
         }
     }
 }
@@ -80,10 +82,12 @@ enum M9BoxLoginLogic {
     /// Flaky network once the server was already reached.
     private static let flakyNetworkCodes: Set<Int> = noNetworkCodes.union([NSURLErrorTimedOut, NSURLErrorNetworkConnectionLost, NSURLErrorCannotConnectToHost, NSURLErrorCannotFindHost, NSURLErrorDNSLookupFailed])
 
-    /// Result of the status.php check: no network is its own message, anything else
-    /// (DNS, TLS, untrusted certificate, HTML, 404) means "there is no box there".
+    /// Result of the status.php check: no network, a timeout or a dropped connection is the
+    /// network; anything else (DNS, TLS, untrusted certificate, HTML, 404) means "there is no
+    /// box there".
     static func error(forServerStatusCode code: Int) -> M9BoxLoginError {
-        noNetworkCodes.contains(code) ? .offline : .serverNotFound
+        let network = noNetworkCodes.union([NSURLErrorTimedOut, NSURLErrorNetworkConnectionLost])
+        return network.contains(code) ? .offline : .serverNotFound
     }
 
     /// Result of getapppassword. The HTTP status wins: NKError.errorCode can carry the OCS
@@ -98,6 +102,16 @@ enum M9BoxLoginLogic {
         }
         return flakyNetworkCodes.contains(errorCode) ? .offline : .useBrowser
     }
+}
+
+/// Text of an M9 Box key. Only en, pt-BR, pt-PT and es carry these keys and iOS has no
+/// per-key fallback, so any other language would show the raw key: use English there.
+func m9boxLocalized(_ key: String) -> String {
+    let text = NSLocalizedString(key, comment: "")
+    guard text == key,
+          let path = Bundle.main.path(forResource: "en", ofType: "lproj"),
+          let english = Bundle(path: path) else { return text }
+    return english.localizedString(forKey: key, value: key, table: nil)
 }
 
 // MARK: - UI and flow
@@ -164,7 +178,7 @@ final class M9BoxLoginForm: UIScrollView, UITextFieldDelegate {
         translatesAutoresizingMaskIntoConstraints = false
 
         let hint = UILabel()
-        hint.text = NSLocalizedString("_m9box_login_hint_", comment: "")
+        hint.text = m9boxLocalized("_m9box_login_hint_")
         hint.textColor = textColor
         hint.font = .preferredFont(forTextStyle: .footnote)
         hint.adjustsFontForContentSizeCategory = true
@@ -193,14 +207,14 @@ final class M9BoxLoginForm: UIScrollView, UITextFieldDelegate {
         filled.baseBackgroundColor = textColor
         filled.baseForegroundColor = textColorOpponent
         filled.background.cornerRadius = 10
-        filled.title = NSLocalizedString("_m9box_login_button_", comment: "")
+        filled.title = m9boxLocalized("_m9box_login_button_")
         loginButton.configuration = filled
         loginButton.accessibilityIdentifier = "m9boxLoginSubmit"
         loginButton.addTarget(self, action: #selector(submit), for: .touchUpInside)
 
         var plain = UIButton.Configuration.plain()
         plain.baseForegroundColor = textColor
-        plain.title = NSLocalizedString("_m9box_login_browser_", comment: "")
+        plain.title = m9boxLocalized("_m9box_login_browser_")
         browserButton.configuration = plain
         browserButton.accessibilityIdentifier = "m9boxLoginBrowser"
         browserButton.addTarget(self, action: #selector(browser), for: .touchUpInside)
@@ -241,7 +255,7 @@ final class M9BoxLoginForm: UIScrollView, UITextFieldDelegate {
         field.leftViewMode = .always
         field.rightView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: 44))
         field.rightViewMode = .always
-        let text = NSLocalizedString(placeholder, comment: "")
+        let text = m9boxLocalized(placeholder)
         field.attributedPlaceholder = NSAttributedString(string: text, attributes: [.foregroundColor: textColor.withAlphaComponent(0.5)])
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
@@ -328,8 +342,8 @@ extension NCLogin {
 
     // MARK: Flow
 
-    private func m9boxShow(_ error: M9BoxLoginError, domain: String = "") {
-        let text = NSLocalizedString(error.key, comment: "")
+    func m9boxShow(_ error: M9BoxLoginError, domain: String = "") {
+        let text = m9boxLocalized(error.key)
         m9boxForm?.showError(error == .serverNotFound ? String(format: text, NCBrandOptions.shared.brand, domain) : text)
     }
 

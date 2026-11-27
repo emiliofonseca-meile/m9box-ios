@@ -861,3 +861,4 @@ You can stop it at any time, adjust the settings, and enable it again.";
 "_m9box_login_err_toomany_" = "Too many attempts. Wait a few minutes and try again.";
 "_m9box_login_err_offline_" = "No connection. Check your internet and try again.";
 "_m9box_login_err_other_" = "Could not log in with the password. Use \"Log in with the browser\".";
+"_m9box_login_err_generic_" = "Could not log in. Try again.";

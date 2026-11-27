@@ -368,7 +368,10 @@ class NCLogin: UIViewController, UITextFieldDelegate, NCLoginQRCodeDelegate {
                 let loginOptions = NKRequestOptions(customUserAgent: userAgent)
                 NextcloudKit.shared.getLoginFlowV2(serverUrl: url, options: loginOptions) { [self] token, endpoint, login, _, error in
                     // Login Flow V2
-                    if error != .success { self.m9boxForm?.setBusy(false) }
+                    if error != .success, self.m9boxForm != nil {
+                        self.m9boxForm?.setBusy(false)
+                        self.m9boxShow(.generic)
+                    }
                     if error == .success, let token, let endpoint, let login {
                         nkLog(debug: "Successfully received login flow information.")
                         let loginProvider = NCLoginProvider()
@@ -379,6 +382,9 @@ class NCLogin: UIViewController, UITextFieldDelegate, NCLoginQRCodeDelegate {
                         loginProvider.startPolling(loginFlowV2Token: token, loginFlowV2Endpoint: endpoint, loginFlowV2Login: login)
                         loginProvider.startAuthentication()
                         self.activeLoginProvider = loginProvider
+                        // M9 Box: the web sheet covers the form now; if the grant's createAccount
+                        // fails (it only shows an alert) the form must still be usable
+                        self.m9boxForm?.setBusy(false)
                     }
                 }
             case .failure(let error):
