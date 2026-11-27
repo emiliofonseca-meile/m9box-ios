@@ -46,6 +46,9 @@ class NCLogin: UIViewController, UITextFieldDelegate, NCLoginQRCodeDelegate {
     private var QRCodeCheck: Bool = false
     private var activeLoginProvider: NCLoginProvider?
 
+    // M9 Box: e-mail + password form (see M9BoxNativeLogin.swift)
+    var m9boxForm: M9BoxLoginForm?
+
     // LucidBanner
     var banner: LucidBanner?
 
@@ -175,6 +178,8 @@ class NCLogin: UIViewController, UITextFieldDelegate, NCLoginQRCodeDelegate {
         }
 
         NCNetworking.shared.certificateDelegate = self
+
+        setupM9BoxNativeLogin(textColor: textColor, textColorOpponent: textColorOpponent)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -336,9 +341,23 @@ class NCLogin: UIViewController, UITextFieldDelegate, NCLoginQRCodeDelegate {
         isUrlValid(url: url)
     }
 
+    /// Spinner of the server address screen. The M9 Box form has its own, and the old arrow
+    /// button must stay hidden (hideSpinnerAndShowButton would show it again).
+    private func setLoginBusy(_ busy: Bool) {
+        if let m9boxForm {
+            m9boxForm.setBusy(busy)
+            return
+        }
+        loginButton.isEnabled = !busy
+        if busy {
+            loginButton.hideButtonAndShowSpinner()
+        } else {
+            loginButton.hideSpinnerAndShowButton()
+        }
+    }
+
     func isUrlValid(url: String, user: String? = nil) {
-        loginButton.isEnabled = false
-        loginButton.hideButtonAndShowSpinner()
+        setLoginBusy(true)
 
         NextcloudKit.shared.getServerStatus(serverUrl: url) { [self] _, serverInfoResult in
             switch serverInfoResult {
@@ -349,6 +368,7 @@ class NCLogin: UIViewController, UITextFieldDelegate, NCLoginQRCodeDelegate {
                 let loginOptions = NKRequestOptions(customUserAgent: userAgent)
                 NextcloudKit.shared.getLoginFlowV2(serverUrl: url, options: loginOptions) { [self] token, endpoint, login, _, error in
                     // Login Flow V2
+                    if error != .success { self.m9boxForm?.setBusy(false) }
                     if error == .success, let token, let endpoint, let login {
                         nkLog(debug: "Successfully received login flow information.")
                         let loginProvider = NCLoginProvider()
@@ -362,8 +382,7 @@ class NCLogin: UIViewController, UITextFieldDelegate, NCLoginQRCodeDelegate {
                     }
                 }
             case .failure(let error):
-                loginButton.hideSpinnerAndShowButton()
-                loginButton.isEnabled = true
+                setLoginBusy(false)
 
                 if error.errorCode == NSURLErrorServerCertificateUntrusted {
                     let alertController = UIAlertController(title: NSLocalizedString("_ssl_certificate_untrusted_", comment: ""), message: NSLocalizedString("_connect_server_anyway_", comment: ""), preferredStyle: .alert)
@@ -453,7 +472,7 @@ class NCLogin: UIViewController, UITextFieldDelegate, NCLoginQRCodeDelegate {
     }
 
     @MainActor
-    private func createAccount(urlBase: String, user: String, password: String) async {
+    func createAccount(urlBase: String, user: String, password: String) async {
         if self.controller == nil {
             self.controller = UIApplication.shared.mainAppWindow?.rootViewController as? NCMainTabBarController
         }
@@ -521,8 +540,7 @@ extension NCLogin: ClientCertificateDelegate, UIDocumentPickerDelegate {
 
 extension NCLogin: NCLoginProviderDelegate {
     func onBack() {
-        loginButton.isEnabled = true
-        loginButton.hideSpinnerAndShowButton()
+        setLoginBusy(false)
         activeLoginProvider?.cancel()
         activeLoginProvider = nil
     }

@@ -94,6 +94,9 @@ final class NCBrandOptions: @unchecked Sendable {
     // Use server theming color
     var use_themingColor: Bool = true
 
+    // M9 Box: log in with e-mail + password (server is box.<domain of the e-mail>), web login stays as fallback
+    var use_email_login: Bool = true
+
     var disable_intro: Bool = false
     var disable_request_login_url: Bool = false
     var disable_multiaccount: Bool = false
