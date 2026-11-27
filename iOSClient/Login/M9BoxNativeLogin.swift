@@ -391,6 +391,11 @@ extension NCLogin {
             // Already in the app: open it, as a new login would, instead of stopping on an error.
             // Its password was not checked, so clear it before the keychain offers to save it.
             m9boxForm?.clearPassword()
+            // From the intro screen (Add account) controller is nil; fall back like createAccount does,
+            // or the screens keep showing the old account while the database switched.
+            if controller == nil {
+                controller = UIApplication.shared.mainAppWindow?.rootViewController as? NCMainTabBarController
+            }
             await NCAccount().changeAccount(accountName, userProfile: nil, controller: controller)
             dismiss(animated: true)
             return nil
