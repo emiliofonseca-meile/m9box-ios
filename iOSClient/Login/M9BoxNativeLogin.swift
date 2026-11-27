@@ -20,7 +20,6 @@ enum M9BoxLoginError: Equatable {
     case invalidEmail
     case emptyPassword
     case serverNotFound
-    case alreadyAdded
     case wrongCredentials
     case tooManyAttempts
     case offline
@@ -33,7 +32,6 @@ enum M9BoxLoginError: Equatable {
         case .invalidEmail: return "_m9box_login_err_email_"
         case .emptyPassword: return "_m9box_login_err_password_"
         case .serverNotFound: return "_m9box_login_err_server_"
-        case .alreadyAdded: return "_m9box_login_err_exists_"
         case .wrongCredentials: return "_m9box_login_err_credentials_"
         case .tooManyAttempts: return "_m9box_login_err_toomany_"
         case .offline: return "_m9box_login_err_offline_"
@@ -388,8 +386,14 @@ extension NCLogin {
     private func m9boxPasswordLogin(email: M9BoxEmail, password: String) async -> M9BoxLoginError? {
         let urlBase = M9BoxLoginLogic.serverURL(domain: email.domain)
 
-        if await NCManageDatabase.shared.getTableAccountAsync(account: M9BoxLoginLogic.accountName(user: email.address, urlBase: urlBase)) != nil {
-            return .alreadyAdded
+        let accountName = M9BoxLoginLogic.accountName(user: email.address, urlBase: urlBase)
+        if await NCManageDatabase.shared.getTableAccountAsync(account: accountName) != nil {
+            // Already in the app: open it, as a new login would, instead of stopping on an error.
+            // Its password was not checked, so clear it before the keychain offers to save it.
+            m9boxForm?.clearPassword()
+            await NCAccount().changeAccount(accountName, userProfile: nil, controller: controller)
+            dismiss(animated: true)
+            return nil
         }
 
         // The password only goes to a host that answers like a Nextcloud with a certificate

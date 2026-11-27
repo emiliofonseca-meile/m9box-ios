@@ -856,7 +856,6 @@ You can stop it at any time, adjust the settings, and enable it again.";
 "_m9box_login_err_email_" = "Enter a valid e-mail.";
 "_m9box_login_err_password_" = "Enter your password.";
 "_m9box_login_err_server_" = "We could not find the %@ of %@.";
-"_m9box_login_err_exists_" = "This account is already in the app.";
 "_m9box_login_err_credentials_" = "Wrong e-mail or password.";
 "_m9box_login_err_toomany_" = "Too many attempts. Wait a few minutes and try again.";
 "_m9box_login_err_offline_" = "No connection. Check your internet and try again.";
